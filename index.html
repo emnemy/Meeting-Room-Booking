@@ -88,14 +88,19 @@ th.dcol{color:#D4A96A;font-size:13px;width:88px}
 .dconf-no{background:none;border:1px solid #ccc;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
 .toast{position:fixed;bottom:24px;right:24px;z-index:2000;color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);font-size:15px;animation:slideUp .3s ease;pointer-events:none}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* Setup styles */
 .setup{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.scard-setup{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.08);width:100%;max-width:620px}
+.setup-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.08);width:100%;max-width:620px}
 .stepbar{display:flex;align-items:center;margin-bottom:28px}
 .sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
 .sline{flex:1;height:2px;margin:0 4px}
-pre.codeblock{background:#1E1E2E;color:#CDD6F4;border-radius:10px;padding:14px 16px;font-size:11.5px;overflow-x:auto;max-height:220px;font-family:monospace;line-height:1.5;white-space:pre;position:relative;margin:0}
-.copybtn{position:absolute;top:10px;right:10px;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;font-family:'Sarabun',sans-serif}
-.tres{padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px}
+pre.codeblock{background:#1E1E2E;color:#CDD6F4;border-radius:10px;padding:14px 16px;font-size:11.5px;overflow-x:auto;max-height:220px;font-family:monospace;line-height:1.5;white-space:pre;margin:0}
+.copybtn{display:block;margin-top:8px;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Sarabun',sans-serif;background:#45475A;color:#fff;transition:background .2s}
+.url-input{width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #C4A882;font-size:14px;font-family:'Sarabun',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px}
+.url-input:focus{border-color:#6B3A2A}
+.connect-btn{width:100%;padding:12px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Sarabun',sans-serif;background:#6B3A2A;color:#fff;transition:background .2s}
+.connect-btn:hover{background:#8B5E3C}
+.tres{padding:10px 14px;border-radius:8px;margin-bottom:10px;font-size:13px}
 .settbox{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
 @media(max-width:600px){.frow{grid-template-columns:1fr 1fr}.header{padding:16px 16px 14px}.htitle{font-size:18px}.main{padding:12px 8px}}
 </style>
@@ -103,6 +108,7 @@ pre.codeblock{background:#1E1E2E;color:#CDD6F4;border-radius:10px;padding:14px 1
 <body>
 <div id="app"></div>
 <script>
+// ── Constants ──────────────────────────────────────────────────────────────
 const ROOMS=["พนาลัย","ไพรวัณ","ห้องอาหารจันทร์ลอย","เทอเรสสระว่ายน้ำ"];
 const RC=["#8B5E3C","#4A7C59","#C4862A","#2A6B8B"];
 const RL=["#FDF6EE","#EEF6F1","#FEF8ED","#EEF4F8"];
@@ -112,7 +118,7 @@ const MSH=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.
 const DTH=["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์"];
 const DSH=["อา","จ","อ","พ","พฤ","ศ","ส"];
 const DC={0:"#B91C1C",6:"#1D4ED8"};
-const BY=2569,CY=2026,MS=3;
+const BY=2569,CY=2026,MAX=3;
 const ES={customerName:"",eventName:"",timeStart:"",timeEnd:"",pax:"",note:""};
 const eSlots=()=>[{...ES},{...ES},{...ES}];
 
@@ -173,27 +179,33 @@ function respond(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }`;
 
+// ── Helpers ────────────────────────────────────────────────────────────────
 function dim(m){return new Date(CY,m+1,0).getDate();}
 function dow(m,d){return new Date(CY,m,d).getDay();}
-function bk(m,d,r){return `bk-${BY}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}-${r}`;}
-function ok(s){return s&&s.customerName&&s.customerName.trim()!="";}
+function bKey(m,d,r){return `bk-${BY}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}-${r}`;}
+function ok(s){return s&&s.customerName&&s.customerName.trim()!=="";}
 function norm(raw){
   if(!raw)return eSlots();
-  const p=typeof raw==="string"?JSON.parse(raw):raw;
-  if(Array.isArray(p)){const a=p.map(s=>({...ES,...s}));while(a.length<MS)a.push({...ES});return a;}
-  return [{...ES,...p},{...ES},{...ES}];
+  try{
+    const p=typeof raw==="string"?JSON.parse(raw):raw;
+    if(Array.isArray(p)){const a=p.map(s=>({...ES,...s}));while(a.length<MAX)a.push({...ES});return a;}
+    return [{...ES,...p},{...ES},{...ES}];
+  }catch{return eSlots();}
 }
 
+// ── State ──────────────────────────────────────────────────────────────────
 let S={
-  gasUrl:localStorage.getItem("gasUrl")||"",
-  month:new Date().getMonth(),
-  bookings:{},loading:false,
-  modal:null,slots:eSlots(),activeSlot:0,saving:false,
-  viewMode:"table",showSettings:false,deleteConfirm:false,
-  testResult:null,testing:false,setupStep:1,setupUrl:"",copied:false
+  gasUrl: localStorage.getItem("gasUrl")||"",
+  month: new Date().getMonth(),
+  bookings:{}, loading:false,
+  modal:null, slots:eSlots(), activeSlot:0, saving:false,
+  viewMode:"table", showSettings:false, deleteConfirm:false,
+  testing:false, testResult:null,
+  setupStep:1, copied:false
 };
 function ss(p){Object.assign(S,p);render();}
 
+// ── API ────────────────────────────────────────────────────────────────────
 async function apiCall(params){
   const qs=new URLSearchParams(params).toString();
   const res=await fetch(S.gasUrl+"?"+qs,{redirect:"follow"});
@@ -219,15 +231,46 @@ function toast(msg,type){
   setTimeout(()=>t.remove(),2800);
 }
 
+// ── Setup actions ──────────────────────────────────────────────────────────
+function goConnect(){
+  const inp=document.getElementById("urlInput");
+  const url=inp?inp.value.trim():"";
+  if(!url){inp&&inp.focus();return;}
+  S.gasUrl=url;
+  ss({testing:true,testResult:null});
+  apiCall({action:"getAll",prefix:"test-"}).then(res=>{
+    if(typeof res==="object"&&!res.error){
+      localStorage.setItem("gasUrl",S.gasUrl);
+      ss({testing:false,testResult:"ok"});
+      setTimeout(()=>loadBk(),900);
+    }else{
+      S.gasUrl="";
+      ss({testing:false,testResult:"error: "+(res.error||"เชื่อมต่อไม่ได้")});
+    }
+  }).catch(e=>{
+    S.gasUrl="";
+    ss({testing:false,testResult:"error: "+e.message});
+  });
+}
+function resetUrl(){localStorage.removeItem("gasUrl");ss({gasUrl:"",bookings:{},showSettings:false,setupStep:1});}
+async function copyCode(){
+  try{await navigator.clipboard.writeText(GAS_CODE);ss({copied:true});setTimeout(()=>ss({copied:false}),2000);}
+  catch{alert("ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาเลือกโค้ดแล้ว Ctrl+C ครับ");}
+}
+
+// ── Booking actions ────────────────────────────────────────────────────────
 function openModal(day,room){
-  const key=bk(S.month,day,room);
+  const key=bKey(S.month,day,room);
   const slots=norm(S.bookings[key]||null);
   const fe=slots.findIndex(s=>!ok(s));
   ss({modal:{day,room,key},slots,activeSlot:fe>=0?fe:0,deleteConfirm:false});
 }
 function closeModal(){ss({modal:null,slots:eSlots(),deleteConfirm:false});}
+
 function updField(field,val){
-  const sl=[...S.slots];sl[S.activeSlot]={...sl[S.activeSlot],[field]:val};ss({slots:sl});
+  const sl=[...S.slots];
+  sl[S.activeSlot]={...sl[S.activeSlot],[field]:val};
+  ss({slots:sl});
 }
 async function saveBk(){
   if(!S.slots.some(ok)){toast("กรุณากรอกชื่อลูกค้าอย่างน้อย 1 รายการ","err");return;}
@@ -250,164 +293,187 @@ async function clearSlot(){
     }catch(e){toast("ลบไม่สำเร็จ: "+e.message,"err");}
   }
 }
-async function testConnect(){
-  if(!S.setupUrl.trim())return;
-  ss({testing:true,testResult:null});
-  const old=S.gasUrl;S.gasUrl=S.setupUrl.trim();
-  try{
-    const res=await apiCall({action:"getAll",prefix:"test-"});
-    if(typeof res==="object"&&!res.error){
-      localStorage.setItem("gasUrl",S.gasUrl);
-      ss({testing:false,testResult:"ok"});
-      setTimeout(()=>{ss({setupStep:1,setupUrl:""});loadBk();},800);
-    }else{
-      S.gasUrl=old;ss({testing:false,testResult:"error: "+(res.error||"เชื่อมต่อไม่ได้")});
-    }
-  }catch(e){S.gasUrl=old;ss({testing:false,testResult:"error: "+e.message});}
-}
-function resetUrl(){localStorage.removeItem("gasUrl");ss({gasUrl:"",bookings:{},showSettings:false,setupStep:1,setupUrl:""});}
-async function copyCode(){
-  try{await navigator.clipboard.writeText(GAS_CODE);ss({copied:true});setTimeout(()=>ss({copied:false}),2000);}catch{}
-}
 
-function h(tag,attr,ch){
+// ── DOM Builder ────────────────────────────────────────────────────────────
+function mk(tag,cls,style,children,events){
   const e=document.createElement(tag);
-  for(const[k,v]of Object.entries(attr||{})){
-    if(k==="cls")e.className=v;
-    else if(k==="html")e.innerHTML=v;
-    else if(k.startsWith("on"))e.addEventListener(k.slice(2).toLowerCase(),v);
-    else if(k==="st")Object.assign(e.style,v);
-    else e.setAttribute(k,v);
+  if(cls)e.className=cls;
+  if(style)Object.assign(e.style,style);
+  for(const[ev,fn]of Object.entries(events||{}))e.addEventListener(ev,fn);
+  for(const c of(children||[])){
+    if(c==null||c===false)continue;
+    e.appendChild(typeof c==="string"?document.createTextNode(c):c);
   }
-  for(const c of(ch||[])){if(c==null||c===false)continue;e.appendChild(typeof c==="string"?document.createTextNode(c):c);}
   return e;
 }
-const d=(a,c)=>h("div",a,c);
-const b=(a,c)=>h("button",a,c);
-const sp=(a,c)=>h("span",a,c);
+const D=(cls,style,ch,ev)=>mk("div",cls,style,ch,ev);
+const B=(cls,style,ch,ev)=>mk("button",cls,style,ch,ev);
+const Sp=(cls,style,ch)=>mk("span",cls,style,ch);
+const T=(tag,cls,style,ch)=>mk(tag,cls,style,ch);
 
+// ── Setup Render ───────────────────────────────────────────────────────────
 function renderSetup(){
   const s=S;
-  const dot=(n)=>d({cls:"sdot",st:{background:s.setupStep>=n?"#6B3A2A":"#E5DDD5",color:s.setupStep>=n?"#fff":"#AAA"}},[String(n)]);
-  const line=(a)=>d({cls:"sline",st:{background:a?"#6B3A2A":"#E5DDD5"}});
+  const dotStyle=(n)=>({background:s.setupStep>=n?"#6B3A2A":"#E5DDD5",color:s.setupStep>=n?"#fff":"#AAA"});
 
+  // Step content
   let body;
   if(s.setupStep===1){
-    body=d({},[
-      h("h2",{st:{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"}},["ขั้นตอนที่ 1: สร้าง Google Sheet"]),
-      h("p",{st:{color:"#666",fontSize:"14px",lineHeight:"1.7",marginBottom:"16px"},html:`
-        1. เปิด <a href="https://sheets.google.com" target="_blank" style="color:#6B3A2A;font-weight:600">sheets.google.com</a> แล้วสร้าง Spreadsheet ใหม่<br/>
-        2. ตั้งชื่อตามต้องการ เช่น <strong>"ตารางจองห้อง 2569"</strong><br/>
-        3. คลิก <strong>Extensions → Apps Script</strong> ที่เมนูด้านบน<br/>
-        4. ลบโค้ดเดิมออกทั้งหมด แล้วไปขั้นตอนถัดไป
-      `},[]),
-      d({st:{display:"flex",gap:"10px"}},[
-        h("a",{href:"https://sheets.google.com/create",target:"_blank",st:{padding:"10px 20px",borderRadius:"8px",background:"#4A7C59",color:"#fff",textDecoration:"none",fontSize:"14px",fontWeight:"600"}},["📊 เปิด Google Sheets"]),
-        b({cls:"btn btn-save",st:{background:"#6B3A2A"},onClick:()=>ss({setupStep:2})},["ถัดไป →"])
+    body=D("",{},[
+      T("h2","",{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"},["ขั้นตอนที่ 1: สร้าง Google Sheet"]),
+      D("",{color:"#666",fontSize:"14px",lineHeight:"1.8",marginBottom:"16px"},[
+        "1. เปิด ",mk("a","",{color:"#6B3A2A",fontWeight:"600"},[" sheets.google.com "],{click:()=>window.open("https://sheets.google.com","_blank")}),
+        " แล้วสร้าง Spreadsheet ใหม่",mk("br"),
+        "2. ตั้งชื่อตามต้องการ เช่น ",mk("strong","",{},["\"ตารางจองห้อง 2569\""]),mk("br"),
+        "3. คลิก ",mk("strong","",{},["Extensions → Apps Script"]),mk("br"),
+        "4. ลบโค้ดเดิมออกทั้งหมด แล้วไปขั้นตอนถัดไป"
+      ]),
+      D("",{display:"flex",gap:"10px"},[
+        mk("a","btn btn-save",{background:"#4A7C59",display:"inline-block",textDecoration:"none"},["📊 เปิด Google Sheets"],{click:()=>window.open("https://sheets.google.com/create","_blank")}),
+        B("btn btn-save",{background:"#6B3A2A"},["ถัดไป →"],{click:()=>ss({setupStep:2})})
       ])
     ]);
   } else if(s.setupStep===2){
-    const pre=h("pre",{cls:"codeblock"},[GAS_CODE]);
-    const cpBtn=b({cls:"copybtn",st:{background:s.copied?"#4A7C59":"#45475A",color:"#fff"},onClick:copyCode},[s.copied?"✓ คัดลอกแล้ว!":"📋 คัดลอก"]);
-    const codeWrap=d({st:{position:"relative",marginBottom:"16px"}},[pre,cpBtn]);
-    body=d({},[
-      h("h2",{st:{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"}},["ขั้นตอนที่ 2: วาง Script และ Deploy"]),
-      h("p",{st:{color:"#666",fontSize:"14px",lineHeight:"1.7",marginBottom:"12px"},html:`
-        1. คัดลอกโค้ดด้านล่าง แล้ววางใน Apps Script แทนโค้ดเดิม<br/>
-        2. กด <strong>Save (Ctrl+S)</strong> → คลิก <strong>Run → getSheet</strong> เพื่อ Authorize<br/>
-        3. คลิก <strong>Deploy → New deployment → Web app</strong><br/>
-        4. Execute as: <strong>Me</strong> · Who has access: <strong>Anyone</strong><br/>
-        5. คลิก <strong>Deploy</strong> แล้วคัดลอก URL ที่ได้
-      `},[]),
-      codeWrap,
-      d({st:{display:"flex",gap:"10px"}},[
-        b({cls:"btn btn-cancel",onClick:()=>ss({setupStep:1})},["← ย้อนกลับ"]),
-        b({cls:"btn btn-save",st:{background:"#6B3A2A"},onClick:()=>ss({setupStep:3})},["Deploy แล้ว ถัดไป →"])
+    body=D("",{},[
+      T("h2","",{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"},["ขั้นตอนที่ 2: วาง Script และ Deploy"]),
+      D("",{color:"#666",fontSize:"14px",lineHeight:"1.8",marginBottom:"12px"},[
+        "1. คัดลอกโค้ดด้านล่าง → วางใน Apps Script ทับโค้ดเดิม",mk("br"),
+        "2. กด ",mk("strong","",{},["Save (Ctrl+S)"]),mk("br"),
+        "3. คลิก ",mk("strong","",{},["Run → getSheet"])," เพื่อ Authorize (สำคัญ!)",mk("br"),
+        "4. คลิก ",mk("strong","",{},["Deploy → New deployment → Web app"]),mk("br"),
+        "5. Execute as: ",mk("strong","",{},["Me"])," · Who has access: ",mk("strong","",{},["Anyone"]),mk("br"),
+        "6. กด Deploy แล้วคัดลอก URL ที่ขึ้นมา"
+      ]),
+      mk("pre","codeblock",{},[GAS_CODE]),
+      B("copybtn",{marginTop:"8px",background:s.copied?"#4A7C59":"#45475A"},
+        [s.copied?"✓ คัดลอกแล้ว!":"📋 คัดลอกโค้ด"],{click:copyCode}),
+      D("",{display:"flex",gap:"10px",marginTop:"16px"},[
+        B("btn btn-cancel",{},["← ย้อนกลับ"],{click:()=>ss({setupStep:1})}),
+        B("btn btn-save",{background:"#6B3A2A"},["Deploy แล้ว ถัดไป →"],{click:()=>ss({setupStep:3})})
       ])
     ]);
   } else {
-    const inp=h("input",{type:"text",value:s.setupUrl,placeholder:"https://script.google.com/macros/s/...",st:{width:"100%",padding:"10px 14px",borderRadius:"8px",border:"1px solid #E5DDD5",fontSize:"14px",boxSizing:"border-box",outline:"none"}});
-    inp.addEventListener("input",e=>ss({setupUrl:e.target.value,testResult:null}));
-    const tr=s.testResult?d({cls:"tres",st:{background:s.testResult==="ok"?"#DCFCE7":"#FEE2E2",color:s.testResult==="ok"?"#16A34A":"#DC2626"}},[(s.testResult==="ok"?"✅ เชื่อมต่อสำเร็จ! กำลังเปิดโปรแกรม...":"⚠️ "+s.testResult)]):null;
-    body=d({},[
-      h("h2",{st:{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"}},["ขั้นตอนที่ 3: ใส่ Web App URL"]),
-      h("p",{st:{color:"#666",fontSize:"14px",marginBottom:"16px"}},["วาง URL ที่ได้จากการ Deploy Apps Script ด้านล่าง"]),
-      d({cls:"field"},[h("label",{},["Web App URL"]),inp]),
-      tr,
-      d({st:{display:"flex",gap:"10px"}},[
-        b({cls:"btn btn-cancel",onClick:()=>ss({setupStep:2})},["← ย้อนกลับ"]),
-        b({cls:"btn btn-save",st:{background:s.testing||!s.setupUrl.trim()?"#AAA":"#6B3A2A",flex:"1"},onClick:testConnect,disabled:s.testing||!s.setupUrl.trim()},[s.testing?"⏳ กำลังทดสอบ...":"🔗 ทดสอบและเชื่อมต่อ"])
+    // Step 3 — No re-render on typing, read from DOM directly
+    const inp=mk("input","url-input",{});
+    inp.id="urlInput";
+    inp.type="text";
+    inp.placeholder="https://script.google.com/macros/s/.../exec";
+    inp.value=S.gasUrl||"";
+
+    const trEl=s.testResult?D("tres",{
+      background:s.testResult==="ok"?"#DCFCE7":"#FEE2E2",
+      color:s.testResult==="ok"?"#16A34A":"#DC2626",
+      marginBottom:"10px"
+    },[(s.testResult==="ok"?"✅ เชื่อมต่อสำเร็จ! กำลังเปิดโปรแกรม...":"⚠️ "+s.testResult)]):null;
+
+    const connBtn=B("connect-btn",{background:s.testing?"#AAA":"#6B3A2A"},
+      [s.testing?"⏳ กำลังทดสอบการเชื่อมต่อ...":"🔗 ทดสอบและเชื่อมต่อ"],
+      {click:goConnect});
+
+    body=D("",{},[
+      T("h2","",{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"},["ขั้นตอนที่ 3: ใส่ Web App URL"]),
+      D("",{color:"#666",fontSize:"14px",marginBottom:"16px"},["วาง URL ที่ได้จาก Deploy Apps Script ด้านล่าง (ต้องลงท้ายด้วย /exec)"]),
+      T("label","",{display:"block",fontSize:"13px",fontWeight:"600",color:"#6B3A2A",marginBottom:"6px"},["Web App URL"]),
+      inp,
+      trEl,
+      connBtn,
+      D("",{marginTop:"10px"},[
+        B("btn btn-cancel",{},["← ย้อนกลับ"],{click:()=>ss({setupStep:2})})
       ])
     ]);
   }
 
-  return d({cls:"setup"},[
-    d({st:{width:"100%",maxWidth:"620px"}},[
-      d({st:{textAlign:"center",marginBottom:"32px"}},[
-        d({st:{fontSize:"40px",marginBottom:"8px"}},["🗓️"]),
-        h("h1",{st:{fontFamily:"'Playfair Display',serif",color:"#3D2B1F",fontSize:"24px"}},["ตั้งค่าระบบจองห้องประชุม"]),
-        h("p",{st:{color:"#888",marginTop:"8px",fontSize:"15px"}},["เชื่อมต่อกับ Google Sheets เพื่อให้ข้อมูลซิงค์ได้จากทุกอุปกรณ์"])
+  return D("setup",{},[
+    D("",{width:"100%",maxWidth:"620px"},[
+      D("",{textAlign:"center",marginBottom:"32px"},[
+        D("",{fontSize:"40px",marginBottom:"8px"},["🗓️"]),
+        T("h1","",{fontFamily:"'Playfair Display',serif",color:"#3D2B1F",fontSize:"24px"},["ตั้งค่าระบบจองห้องประชุม"]),
+        D("",{color:"#888",marginTop:"8px",fontSize:"15px"},["เชื่อมต่อกับ Google Sheets เพื่อให้ข้อมูลซิงค์ได้จากทุกอุปกรณ์"])
       ]),
-      d({cls:"stepbar"},[dot(1),line(s.setupStep>1),dot(2),line(s.setupStep>2),dot(3)]),
-      d({cls:"scard-setup"},[body]),
-      h("p",{st:{textAlign:"center",color:"#BBB",fontSize:"12px",marginTop:"16px"}},["ตั้งค่าครั้งเดียว ข้อมูลซิงค์ทุกอุปกรณ์ผ่าน Google Sheets ของคุณ"])
+      // Step bar
+      D("stepbar",{},[
+        D("sdot",dotStyle(1),["1"]),
+        D("sline",{background:s.setupStep>1?"#6B3A2A":"#E5DDD5"}),
+        D("sdot",dotStyle(2),["2"]),
+        D("sline",{background:s.setupStep>2?"#6B3A2A":"#E5DDD5"}),
+        D("sdot",dotStyle(3),["3"])
+      ]),
+      D("setup-card",{},[body]),
+      D("",{textAlign:"center",color:"#BBB",fontSize:"12px",marginTop:"16px"},["ตั้งค่าครั้งเดียว ข้อมูลซิงค์ทุกอุปกรณ์ผ่าน Google Sheets ของคุณ"])
     ])
   ]);
 }
 
+// ── App Render ─────────────────────────────────────────────────────────────
 function renderApp(){
   const s=S;
   const days=dim(s.month);
-  const mc=ROOMS.map(room=>{let c=0;for(let d=1;d<=days;d++){const b=s.bookings[bk(s.month,d,room)];if(b&&b.some(ok))c++;}return c;});
+  const mc=ROOMS.map(room=>{
+    let c=0;
+    for(let d=1;d<=days;d++){const b=s.bookings[bKey(s.month,d,room)];if(b&&b.some(ok))c++;}
+    return c;
+  });
 
-  const header=d({cls:"header"},[
-    d({cls:"hinner"},[
-      d({cls:"htop"},[
-        d({},[
-          d({cls:"hsub"},["ระบบจองห้องประชุม · Google Sheets"]),
-          h("h1",{cls:"htitle"},[`ตารางรับจองห้องประชุม พ.ศ. ${BY}`])
+  const header=D("header",{},[
+    D("hinner",{},[
+      D("htop",{},[
+        D("",{},[
+          D("hsub",{},["ระบบจองห้องประชุม · Google Sheets"]),
+          T("h1","htitle",{},[`ตารางรับจองห้องประชุม พ.ศ. ${BY}`])
         ]),
-        d({cls:"hbtns"},[
-          b({cls:"hbtn "+(s.viewMode==="table"?"act":"inact"),onClick:()=>ss({viewMode:"table"})},["📅 ตาราง"]),
-          b({cls:"hbtn "+(s.viewMode==="list"?"act":"inact"),onClick:()=>ss({viewMode:"list"})},["📋 รายการ"]),
-          b({cls:"hbtn out",onClick:()=>ss({showSettings:true})},["⚙️ ตั้งค่า"])
+        D("hbtns",{},[
+          B("hbtn "+(s.viewMode==="table"?"act":"inact"),{},["📅 ตาราง"],{click:()=>ss({viewMode:"table"})}),
+          B("hbtn "+(s.viewMode==="list"?"act":"inact"),{},["📋 รายการ"],{click:()=>ss({viewMode:"list"})}),
+          B("hbtn out",{},["⚙️ ตั้งค่า"],{click:()=>ss({showSettings:true})})
         ])
       ]),
-      d({cls:"pills"},ROOMS.map((r,i)=>d({cls:"pill",st:{borderLeft:`3px solid ${RC[i]}`}},[d({cls:"pill-n"},[r]),d({cls:"pill-c"},[`จอง ${mc[i]} วัน`])])))
+      D("pills",{},ROOMS.map((r,i)=>
+        D("pill",{borderLeft:`3px solid ${RC[i]}`},[
+          D("pill-n",{},[r]),
+          D("pill-c",{},[`จอง ${mc[i]} วัน`])
+        ])
+      ))
     ])
   ]);
 
-  const mtabs=d({cls:"mtabs"},[
-    d({cls:"mtabs-in"},MSH.map((m,i)=>b({cls:"mtab"+(s.month===i?" act":""),onClick:()=>{ss({month:i});setTimeout(loadBk,10);}},[m])))
+  const mtabs=D("mtabs",{},[
+    D("mtabs-in",{},MSH.map((m,i)=>
+      B("mtab"+(s.month===i?" act":""),{},{},
+        [m],{click:()=>{ss({month:i});setTimeout(loadBk,50);}})
+    ))
   ]);
 
   let content;
   if(s.loading){
-    content=d({st:{textAlign:"center",padding:"60px",color:"#999"}},[d({st:{fontSize:"28px",marginBottom:"8px"}},["⏳"]),"กำลังโหลดข้อมูลจาก Google Sheets..."]);
+    content=D("",{textAlign:"center",padding:"60px",color:"#999"},[
+      D("",{fontSize:"28px",marginBottom:"8px"},["⏳"]),
+      "กำลังโหลดข้อมูลจาก Google Sheets..."
+    ]);
   } else if(s.viewMode==="table"){
     content=renderTable(s,days);
   } else {
     content=renderList(s,days);
   }
 
-  const main=d({cls:"main"},[
-    d({cls:"main-top"},[
-      h("h2",{cls:"main-ttl"},[`${MTH[s.month]} ${BY}`]),
-      d({cls:"main-hint"},["คลิกช่องเพื่อเพิ่ม/แก้ไขการจอง · สูงสุด 3 รายการ/ห้อง/วัน"])
+  const main=D("main",{},[
+    D("main-top",{},[
+      T("h2","main-ttl",{},[`${MTH[s.month]} ${BY}`]),
+      D("main-hint",{},["คลิกช่องเพื่อเพิ่ม/แก้ไขการจอง · สูงสุด 3 รายการ/ห้อง/วัน"])
     ]),
     content
   ]);
 
   const modal=s.modal?renderModal(s):null;
   const settings=s.showSettings?renderSettings():null;
-  return d({},[header,mtabs,main,modal,settings].filter(Boolean));
+  return D("",{},[header,mtabs,main,modal,settings].filter(Boolean));
 }
 
+// ── Table Render ───────────────────────────────────────────────────────────
 function renderTable(s,days){
-  const thead=h("thead",{},[
-    h("tr",{},[
-      h("th",{cls:"dcol"},["วันที่"]),
-      ...ROOMS.map((r,i)=>h("th",{st:{borderLeft:`3px solid ${RC[i]}`}},[r]))
+  const thead=mk("thead","",{},[
+    mk("tr","",{},[
+      T("th","dcol",{},["วันที่"]),
+      ...ROOMS.map((r,i)=>T("th","",{borderLeft:`3px solid ${RC[i]}`},[r]))
     ])
   ]);
   const rows=[];
@@ -415,165 +481,184 @@ function renderTable(s,days){
     const dw=dow(s.month,day);
     const bg=dw===0?"#FFF5F5":dw===6?"#F5F8FF":day%2===0?"#FAFAF8":"#fff";
     const cells=[
-      h("td",{cls:"dcell"},[
-        d({cls:"dnum",st:{color:DC[dw]||"#3D2B1F"}},[String(day)]),
-        d({cls:"dname",st:{color:DC[dw]||"#BBB"}},[DSH[dw]])
+      mk("td","dcell",{},[
+        D("dnum",{color:DC[dw]||"#3D2B1F"},[String(day)]),
+        D("dname",{color:DC[dw]||"#BBB"},[DSH[dw]])
       ])
     ];
     ROOMS.forEach((room,ri)=>{
-      const bkd=s.bookings[bk(s.month,day,room)];
+      const bkd=s.bookings[bKey(s.month,day,room)];
       const filled=bkd?bkd.filter(ok):[];
       const cc=filled.length>0?[
         ...filled.map(sl=>{
           const oi=bkd.indexOf(sl);
-          return d({cls:"scard",st:{background:RL[ri],borderLeft:`3px solid ${SB[oi]||RC[ri]}`}},[
-            d({cls:"scard-h"},[sp({cls:"sbadge",st:{background:SB[oi]||RC[ri]}},[String(oi+1)]),sp({cls:"sname",st:{color:RC[ri]}},[sl.customerName])]),
-            sl.eventName?d({cls:"sevent"},[sl.eventName]):null,
-            (sl.timeStart||sl.pax)?d({cls:"stime"},[(sl.timeStart?`🕐${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}`:"")+(sl.pax?` · ${sl.pax}คน`:"")]):null
+          return D("scard",{background:RL[ri],borderLeft:`3px solid ${SB[oi]||RC[ri]}`},[
+            D("scard-h",{},[
+              Sp("sbadge",{background:SB[oi]||RC[ri]},[String(oi+1)]),
+              Sp("sname",{color:RC[ri]},[sl.customerName])
+            ]),
+            sl.eventName?D("sevent",{},[sl.eventName]):null,
+            (sl.timeStart||sl.pax)?D("stime",{},[(sl.timeStart?`🕐${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}`:""),(sl.pax?` · ${sl.pax}คน`:"")]):null
           ].filter(Boolean));
         }),
-        filled.length<MS?d({cls:"mh"},["+ เพิ่ม"]):null
-      ].filter(Boolean):[d({cls:"ah"},["+ เพิ่ม"])];
+        filled.length<MAX?D("mh",{},["+ เพิ่ม"]):null
+      ].filter(Boolean):[D("ah",{},["+ เพิ่ม"])];
 
-      const td=h("td",{cls:"rcell",st:{borderLeft:`2px solid ${RC[ri]}22`},onClick:()=>openModal(day,room)},cc);
+      const td=mk("td","rcell",{borderLeft:`2px solid ${RC[ri]}22`},cc,{click:()=>openModal(day,room)});
       td.addEventListener("mouseenter",()=>td.style.background=RL[ri]);
       td.addEventListener("mouseleave",()=>td.style.background="transparent");
       cells.push(td);
     });
-    rows.push(h("tr",{st:{background:bg}},cells));
+    rows.push(mk("tr","",{background:bg},cells));
   }
-  return d({cls:"twrap"},[h("table",{},[thead,h("tbody",{},rows)])]);
+  return D("twrap",{},[mk("table","",{},[thead,mk("tbody","",{},rows)])]);
 }
 
+// ── List Render ────────────────────────────────────────────────────────────
 function renderList(s,days){
   const items=[];
   for(let dd=1;dd<=days;dd++){
     ROOMS.forEach((room,ri)=>{
-      const bkd=s.bookings[bk(s.month,dd,room)];
+      const bkd=s.bookings[bKey(s.month,dd,room)];
       if(bkd&&bkd.some(ok))items.push({day:dd,room,ri,bkd});
     });
   }
-  if(!items.length)return d({cls:"empty"},[d({st:{fontSize:"40px",marginBottom:"12px"}},["📭"]),"ยังไม่มีการจองในเดือนนี้"]);
-  return d({cls:"lwrap"},items.map(({day,room,ri,bkd})=>{
+  if(!items.length)return D("empty",{},[D("",{fontSize:"40px",marginBottom:"12px"},["📭"]),"ยังไม่มีการจองในเดือนนี้"]);
+  return D("lwrap",{},items.map(({day,room,ri,bkd})=>{
     const dw=dow(s.month,day);
-    const card=d({cls:"lcard",st:{borderLeft:`4px solid ${RC[ri]}`},onClick:()=>openModal(day,room)},[
-      d({cls:"lday"},[
-        d({cls:"ldnum",st:{color:DC[dw]||"#3D2B1F"}},[String(day)]),
-        d({cls:"ldname",st:{color:DC[dw]||"#999"}},[DTH[dw]])
+    const card=D("lcard",{borderLeft:`4px solid ${RC[ri]}`},[
+      D("lday",{},[
+        D("ldnum",{color:DC[dw]||"#3D2B1F"},[String(day)]),
+        D("ldname",{color:DC[dw]||"#999"},[DTH[dw]])
       ]),
-      d({st:{flex:"1"}},[
-        d({cls:"lrtitle",st:{color:RC[ri]}},[`${room} · ${bkd.filter(ok).length} รายการ`]),
-        d({cls:"lslots"},bkd.map((sl,i)=>{
+      D("",{flex:"1"},[
+        D("lrtitle",{color:RC[ri]},[`${room} · ${bkd.filter(ok).length} รายการ`]),
+        D("lslots",{},bkd.map((sl,i)=>{
           if(!ok(sl))return null;
-          return d({cls:"lslot",st:{background:RL[ri],borderLeft:`3px solid ${SB[i]}`}},[
-            sp({cls:"lsbadge",st:{background:SB[i]}},[String(i+1)]),
-            d({},[
-              d({st:{fontWeight:"700",fontSize:"14px",color:"#3D2B1F"}},[sl.customerName]),
-              sl.eventName?d({st:{color:"#666",fontSize:"12px"}},[sl.eventName]):null,
-              d({st:{display:"flex",gap:"10px",marginTop:"2px",flexWrap:"wrap"}},[
-                sl.timeStart?sp({st:{fontSize:"12px",color:"#888"}},[`🕐 ${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}`]):null,
-                sl.pax?sp({st:{fontSize:"12px",color:"#888"}},[`👥 ${sl.pax} คน`]):null,
-                sl.note?sp({st:{fontSize:"12px",color:"#888"}},[`📝 ${sl.note}`]):null
+          return D("lslot",{background:RL[ri],borderLeft:`3px solid ${SB[i]}`},[
+            Sp("lsbadge",{background:SB[i]},[String(i+1)]),
+            D("",{},[
+              D("",{fontWeight:"700",fontSize:"14px",color:"#3D2B1F"},[sl.customerName]),
+              sl.eventName?D("",{color:"#666",fontSize:"12px"},[sl.eventName]):null,
+              D("",{display:"flex",gap:"10px",marginTop:"2px",flexWrap:"wrap"},[
+                sl.timeStart?Sp("",{fontSize:"12px",color:"#888"},[`🕐 ${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}`]):null,
+                sl.pax?Sp("",{fontSize:"12px",color:"#888"},[`👥 ${sl.pax} คน`]):null,
+                sl.note?Sp("",{fontSize:"12px",color:"#888"},[`📝 ${sl.note}`]):null
               ].filter(Boolean))
             ])
           ].filter(Boolean));
         }).filter(Boolean))
       ])
-    ]);
+    ],{},{click:()=>openModal(day,room)});
     card.addEventListener("mouseenter",()=>card.style.boxShadow="0 4px 16px rgba(0,0,0,.12)");
     card.addEventListener("mouseleave",()=>card.style.boxShadow="0 2px 8px rgba(0,0,0,.07)");
     return card;
   }));
 }
 
+// ── Modal Render ───────────────────────────────────────────────────────────
 function renderModal(s){
   const ri=ROOMS.indexOf(s.modal.room);
   const rc=RC[ri];
   const cur=s.slots[s.activeSlot]||{...ES};
   const fc=s.slots.filter(ok).length;
 
-  function field(label,fd,type,ph,multi){
-    const inp=multi?h("textarea",{rows:"2",placeholder:ph||""},null):h("input",{type:type||"text",placeholder:ph||""},null);
+  function makeField(label,fd,type,ph,multi){
+    const inp=multi?mk("textarea","",{rows:"2"}):mk("input","",{type:type||"text"});
     inp.value=cur[fd]||"";
+    inp.placeholder=ph||"";
     inp.addEventListener("input",e=>updField(fd,e.target.value));
     inp.addEventListener("focus",()=>inp.style.borderColor="#8B5E3C");
     inp.addEventListener("blur",()=>inp.style.borderColor="#E5DDD5");
-    return d({cls:"field"},[h("label",{},[label]),inp]);
+    return D("field",{},[T("label","",{},[label]),inp]);
   }
 
   const tabs=s.slots.map((sl,i)=>{
     const f=ok(sl),ia=s.activeSlot===i;
-    const t=b({cls:"stab",st:{background:ia?"#fff":"rgba(255,255,255,.2)",color:ia?rc:"rgba(255,255,255,.85)",fontWeight:ia?"700":"500"},onClick:()=>ss({activeSlot:i,deleteConfirm:false})},[
-      sp({cls:"stdot",st:{background:f?(ia?SB[i]:"rgba(255,255,255,.35)"):"transparent",color:f?"#fff":(ia?rc:"rgba(255,255,255,.6)"),border:f?"none":`1.5px solid ${ia?rc+"99":"rgba(255,255,255,.5)"}`}},[String(i+1)]),
+    return B("stab",{
+      background:ia?"#fff":"rgba(255,255,255,.2)",
+      color:ia?rc:"rgba(255,255,255,.85)",fontWeight:ia?"700":"500"
+    },[
+      Sp("stdot",{
+        background:f?(ia?SB[i]:"rgba(255,255,255,.35)"):"transparent",
+        color:f?"#fff":(ia?rc:"rgba(255,255,255,.6)"),
+        border:f?"none":`1.5px solid ${ia?rc+"99":"rgba(255,255,255,.5)"}`
+      },[String(i+1)]),
       `รายการที่ ${i+1}`,f?" ✓":""
-    ]);
-    return t;
+    ],{click:()=>ss({activeSlot:i,deleteConfirm:false})});
   });
 
-  const sum=fc>0?d({cls:"sumbox"},[
-    d({cls:"sumttl"},[`📋 สรุปการจองวันนี้ (${fc}/${MS})`]),
+  const sum=fc>0?D("sumbox",{},[
+    D("sumttl",{},[`📋 สรุปการจองวันนี้ (${fc}/${MAX})`]),
     ...s.slots.map((sl,i)=>{
       if(!ok(sl))return null;
-      const row=d({cls:"sumrow",st:{background:s.activeSlot===i?RL[ri]:"transparent"},onClick:()=>ss({activeSlot:i})},[
-        sp({cls:"sumbadge",st:{background:SB[i]}},[String(i+1)]),
-        sp({st:{fontSize:"13px",color:"#3D2B1F",fontWeight:"600",flex:"1"}},[sl.customerName]),
-        sl.timeStart?sp({st:{fontSize:"11px",color:"#999"}},[sl.timeStart+(sl.timeEnd?"-"+sl.timeEnd:"")]):null,
-        sl.pax?sp({st:{fontSize:"11px",color:"#999"}},[sl.pax+"คน"]):null
-      ].filter(Boolean));
-      return row;
+      return D("sumrow",{background:s.activeSlot===i?RL[ri]:"transparent"},[
+        Sp("sumbadge",{background:SB[i]},[String(i+1)]),
+        Sp("",{fontSize:"13px",color:"#3D2B1F",fontWeight:"600",flex:"1"},[sl.customerName]),
+        sl.timeStart?Sp("",{fontSize:"11px",color:"#999"},[sl.timeStart+(sl.timeEnd?"-"+sl.timeEnd:"")]):null,
+        sl.pax?Sp("",{fontSize:"11px",color:"#999"},[sl.pax+"คน"]):null
+      ].filter(Boolean),{},{click:()=>ss({activeSlot:i})});
     }).filter(Boolean)
   ]):null;
 
-  const delSec=ok(cur)?
-    (!s.deleteConfirm?
-      b({cls:"btn-del",onClick:()=>ss({deleteConfirm:true})},[`🗑 ลบรายการที่ ${s.activeSlot+1}`]):
-      d({cls:"dconf"},[
-        sp({},[" ยืนยันลบ?"]),
-        b({cls:"dconf-yes",onClick:clearSlot},["ยืนยัน"]),
-        b({cls:"dconf-no",onClick:()=>ss({deleteConfirm:false})},["ยกเลิก"])
+  const delSec=ok(cur)?(
+    !s.deleteConfirm?
+      B("btn-del",{},["🗑 ลบรายการที่ "+(s.activeSlot+1)],{click:()=>ss({deleteConfirm:true})}):
+      D("dconf",{},[
+        Sp("",{fontSize:"12px",color:"#EF4444"},["ยืนยันลบ?"]),
+        B("dconf-yes",{},["ยืนยัน"],{click:clearSlot}),
+        B("dconf-no",{},["ยกเลิก"],{click:()=>ss({deleteConfirm:false})})
       ])
-    ):null;
+  ):null;
 
-  const ov=d({cls:"overlay",onClick:(e)=>{if(e.target===ov)closeModal();}},[
-    d({cls:"modal"},[
-      d({cls:"mhead",st:{background:`linear-gradient(135deg,${rc},${rc}BB)`}},[
-        d({cls:"mdate"},[`${s.modal.day} ${MTH[s.month]} ${BY}`]),
-        d({cls:"mroom"},[s.modal.room]),
-        d({cls:"stabs"},tabs)
+  const ov=D("overlay",{},[ 
+    D("modal",{},[
+      D("mhead",{background:`linear-gradient(135deg,${rc},${rc}BB)`},[
+        D("mdate",{},[`${s.modal.day} ${MTH[s.month]} ${BY}`]),
+        D("mroom",{},[s.modal.room]),
+        D("stabs",{},tabs)
       ]),
-      d({cls:"mbody"},[
-        field("ชื่อลูกค้า / องค์กร *","customerName","text","กรอกชื่อลูกค้าหรือองค์กร"),
-        field("ชื่องาน / รายการ","eventName","text","เช่น ประชุมบอร์ด, สัมมนา"),
-        d({cls:"frow"},[field("เวลาเริ่ม","timeStart","time"),field("เวลาสิ้นสุด","timeEnd","time"),field("จำนวนคน","pax","number","0")]),
-        field("หมายเหตุ","note","text","ข้อมูลเพิ่มเติม",true),
+      D("mbody",{},[
+        makeField("ชื่อลูกค้า / องค์กร *","customerName","text","กรอกชื่อลูกค้าหรือองค์กร"),
+        makeField("ชื่องาน / รายการ","eventName","text","เช่น ประชุมบอร์ด, สัมมนา"),
+        D("frow",{},[
+          makeField("เวลาเริ่ม","timeStart","time"),
+          makeField("เวลาสิ้นสุด","timeEnd","time"),
+          makeField("จำนวนคน","pax","number","0")
+        ]),
+        makeField("หมายเหตุ","note","text","ข้อมูลเพิ่มเติม",true),
         sum,
-        d({cls:"mfooter"},[
-          d({},[delSec].filter(Boolean)),
-          d({st:{display:"flex",gap:"10px"}},[
-            b({cls:"btn btn-cancel",onClick:closeModal},["ยกเลิก"]),
-            b({cls:"btn btn-save",st:{background:rc,opacity:s.saving?.7:1},onClick:saveBk,disabled:s.saving},[s.saving?"⏳ กำลังบันทึก...":"💾 บันทึกทั้งหมด"])
+        D("mfooter",{},[
+          D("",{},[delSec].filter(Boolean)),
+          D("",{display:"flex",gap:"10px"},[
+            B("btn btn-cancel",{},["ยกเลิก"],{click:closeModal}),
+            B("btn btn-save",{background:rc,opacity:s.saving?.7:1},
+              [s.saving?"⏳ กำลังบันทึก...":"💾 บันทึกทั้งหมด"],
+              {click:saveBk})
           ])
         ])
       ])
     ])
-  ]);
+  ],{},{click:(e)=>{if(e.target===ov)closeModal();}});
   return ov;
 }
 
+// ── Settings Render ────────────────────────────────────────────────────────
 function renderSettings(){
-  const ov=d({cls:"overlay",onClick:(e)=>{if(e.target===ov)ss({showSettings:false});}},[
-    d({cls:"settbox"},[
-      h("h3",{st:{marginBottom:"16px",color:"#3D2B1F"}},["⚙️ ตั้งค่าระบบ"]),
-      h("p",{st:{color:"#666",fontSize:"14px"}},["ข้อมูลถูกเชื่อมต่อกับ Google Sheets แล้ว"]),
-      d({st:{display:"flex",gap:"10px",marginTop:"20px"}},[
-        b({cls:"btn btn-cancel",st:{flex:"1"},onClick:()=>ss({showSettings:false})},["ปิด"]),
-        b({cls:"btn btn-save",st:{flex:"1",background:"#EF4444"},onClick:resetUrl},["🔄 เปลี่ยน URL ใหม่"])
+  const ov=D("overlay",{},[
+    D("settbox",{},[
+      T("h3","",{marginBottom:"16px",color:"#3D2B1F"},["⚙️ ตั้งค่าระบบ"]),
+      D("",{color:"#666",fontSize:"14px"},["ข้อมูลถูกเชื่อมต่อกับ Google Sheets แล้ว"]),
+      D("",{display:"flex",gap:"10px",marginTop:"20px"},[
+        B("btn btn-cancel",{flex:"1"},["ปิด"],{click:()=>ss({showSettings:false})}),
+        B("btn btn-save",{flex:"1",background:"#EF4444"},["🔄 เปลี่ยน URL ใหม่"],{click:resetUrl})
       ])
     ])
-  ]);
+  ],{},{click:(e)=>{if(e.target===ov)ss({showSettings:false});}});
   return ov;
 }
 
+// ── Main render ────────────────────────────────────────────────────────────
 function render(){
   const root=document.getElementById("app");
   root.innerHTML="";
@@ -581,7 +666,7 @@ function render(){
 }
 
 render();
-if(S.gasUrl)loadBk();
+if(S.gasUrl) loadBk();
 </script>
 </body>
 </html>
