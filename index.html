@@ -9,13 +9,55 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#F9F5F0;font-family:'Sarabun',sans-serif;min-height:100vh}
 button,input,textarea{font-family:'Sarabun',sans-serif}
+
+/* ── Setup ── */
+#setup-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.sw{width:100%;max-width:620px}
+.stitle{text-align:center;margin-bottom:32px}
+.stitle .icon{font-size:44px;margin-bottom:10px}
+.stitle h1{font-family:'Playfair Display',serif;color:#3D2B1F;font-size:24px}
+.stitle p{color:#888;margin-top:8px;font-size:15px}
+.stepbar{display:flex;align-items:center;margin-bottom:24px}
+.sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;background:#E5DDD5;color:#AAA;transition:all .3s}
+.sdot.done{background:#6B3A2A;color:#fff}
+.sline{flex:1;height:2px;background:#E5DDD5;margin:0 4px;transition:background .3s}
+.sline.done{background:#6B3A2A}
+.scard{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.scard h2{color:#3D2B1F;font-size:18px;margin-bottom:10px}
+.scard p{color:#666;font-size:14px;line-height:1.8;margin-bottom:16px}
+.scard p strong{color:#3D2B1F}
+pre.codeblock{background:#1E1E2E;color:#CDD6F4;border-radius:10px;padding:14px 16px;font-size:11.5px;overflow-x:auto;max-height:220px;font-family:monospace;line-height:1.5;white-space:pre}
+.setup-hint{text-align:center;color:#BBB;font-size:12px;margin-top:14px}
+.btn-row{display:flex;gap:10px;margin-top:16px}
+.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:14px;font-weight:600;font-family:'Sarabun',sans-serif;transition:all .2s}
+.btn-primary{background:#6B3A2A;color:#fff}
+.btn-primary:hover{background:#8B5E3C}
+.btn-secondary{background:#4A7C59;color:#fff}
+.btn-secondary:hover{background:#3D6448}
+.btn-outline{background:none;border:1px solid #ddd;color:#666}
+.btn-outline:hover{background:#f5f5f5}
+.btn-danger{background:#EF4444;color:#fff}
+.btn-full{width:100%;padding:13px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Sarabun',sans-serif;background:#6B3A2A;color:#fff;margin-top:6px;transition:background .2s}
+.btn-full:hover{background:#8B5E3C}
+.url-input{width:100%;padding:11px 14px;border-radius:8px;border:2px solid #C4A882;font-size:14px;font-family:'Sarabun',sans-serif;outline:none;margin-bottom:10px}
+.url-input:focus{border-color:#6B3A2A}
+.url-label{display:block;font-size:13px;font-weight:600;color:#6B3A2A;margin-bottom:6px}
+#test-result{padding:11px 14px;border-radius:8px;font-size:13px;margin-bottom:10px;display:none}
+.res-ok{background:#DCFCE7;color:#16A34A}
+.res-err{background:#FEE2E2;color:#DC2626}
+.copy-row{display:flex;justify-content:flex-end;margin-top:8px}
+.btn-copy{padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Sarabun',sans-serif;background:#45475A;color:#fff}
+.btn-copy.copied{background:#4A7C59}
+
+/* ── App ── */
+#app-page{display:none}
 .header{background:linear-gradient(135deg,#3D2B1F 0%,#6B3A2A 60%,#8B5E3C 100%);padding:22px 28px 18px;box-shadow:0 4px 20px rgba(61,43,31,.3)}
 .hinner{max-width:1300px;margin:0 auto}
 .htop{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .hsub{color:#D4A96A;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:3px}
 .htitle{font-family:'Playfair Display',serif;color:#FDF6EE;font-size:22px;font-weight:600}
 .hbtns{display:flex;gap:8px;flex-wrap:wrap}
-.hbtn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.hbtn{padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600}
 .hbtn.act{background:#D4A96A;color:#3D2B1F}
 .hbtn.inact{background:rgba(255,255,255,.15);color:#FDF6EE}
 .hbtn.out{background:none;color:#FDF6EE;border:1px solid rgba(255,255,255,.3)}
@@ -25,9 +67,9 @@ button,input,textarea{font-family:'Sarabun',sans-serif}
 .pill-c{color:#FDF6EE;font-size:12px}
 .mtabs{background:#fff;border-bottom:1px solid #E8DDD0;overflow-x:auto}
 .mtabs-in{max-width:1300px;margin:0 auto;padding:0 20px;display:flex}
-.mtab{padding:12px 13px;border:none;background:none;cursor:pointer;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;color:#888}
+.mtab{padding:12px 13px;border:none;background:none;cursor:pointer;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;color:#888}
 .mtab.act{font-weight:700;color:#6B3A2A;border-bottom-color:#6B3A2A}
-.main{max-width:1300px;margin:0 auto;padding:18px 12px}
+.amain{max-width:1300px;margin:0 auto;padding:18px 12px}
 .main-top{margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .main-ttl{color:#3D2B1F;font-size:17px;font-weight:700}
 .main-hint{font-size:12px;color:#AAA}
@@ -36,77 +78,185 @@ table{width:100%;border-collapse:collapse;min-width:720px}
 thead tr{background:#3D2B1F}
 th{padding:12px 10px;color:#fff;font-size:12px;font-weight:700}
 th.dcol{color:#D4A96A;font-size:13px;width:88px}
-.dcell{padding:9px 14px;text-align:center;border-bottom:1px solid #F0EAE2;vertical-align:middle}
+td.dcell{padding:9px 14px;text-align:center;border-bottom:1px solid #F0EAE2;vertical-align:middle}
 .dnum{font-weight:800;font-size:16px}
 .dname{font-size:10px;font-weight:600}
-.rcell{padding:5px 7px;border-bottom:1px solid #F0EAE2;cursor:pointer;vertical-align:top;min-width:128px;transition:background .15s}
+td.rcell{padding:5px 7px;border-bottom:1px solid #F0EAE2;cursor:pointer;vertical-align:top;min-width:128px}
+td.rcell:hover{opacity:.85}
 .ah{color:#DDD;font-size:11px;text-align:center;padding:7px 0}
-.mh{color:#CCC;font-size:10px;text-align:center}
-.scard{border-radius:5px;padding:4px 8px;margin-bottom:3px}
+.mhint{color:#CCC;font-size:10px;text-align:center}
+.scard-b{border-radius:5px;padding:4px 8px;margin-bottom:3px}
 .scard-h{display:flex;align-items:center;gap:4px}
 .sbadge{width:13px;height:13px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;flex-shrink:0}
 .sname{font-weight:700;font-size:12px}
 .sevent{color:#666;font-size:10px;margin-left:17px}
-.stime{color:#888;font-size:10px;margin-left:17px}
+.stime-t{color:#888;font-size:10px;margin-left:17px}
 .lwrap{display:flex;flex-direction:column;gap:10px}
-.lcard{background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;display:flex;gap:14px;transition:box-shadow .2s}
+.lcard{background:#fff;border-radius:12px;padding:14px 18px;box-shadow:0 2px 8px rgba(0,0,0,.07);cursor:pointer;display:flex;gap:14px}
 .lday{text-align:center;min-width:44px}
 .ldnum{font-weight:800;font-size:20px}
 .ldname{font-size:10px;font-weight:600}
-.lrtitle{font-size:11px;font-weight:700;margin-bottom:7px}
 .lslots{display:flex;flex-direction:column;gap:5px}
 .lslot{display:flex;gap:10px;padding:7px 10px;border-radius:8px}
 .lsbadge{width:17px;height:17px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;flex-shrink:0;margin-top:1px}
-.empty{text-align:center;padding:60px 20px;color:#BBB;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.empty-box{text-align:center;padding:60px 20px;color:#BBB;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
 .overlay{position:fixed;inset:0;background:rgba(30,15,5,.65);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{background:#fff;border-radius:18px;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
+.modal-box{background:#fff;border-radius:18px;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;max-height:92vh;display:flex;flex-direction:column}
 .mhead{padding:18px 24px 0}
 .mdate{color:rgba(255,255,255,.7);font-size:12px;margin-bottom:2px}
-.mroom{color:#fff;font-size:17px;font-weight:700;margin-bottom:14px}
+.mroom-t{color:#fff;font-size:17px;font-weight:700;margin-bottom:14px}
 .stabs{display:flex;gap:4px}
-.stab{padding:8px 15px;border:none;cursor:pointer;border-radius:8px 8px 0 0;font-size:13px;transition:all .15s;display:flex;align-items:center;gap:5px}
+.stab{padding:8px 15px;border:none;cursor:pointer;border-radius:8px 8px 0 0;font-size:13px;display:flex;align-items:center;gap:5px}
 .stdot{width:17px;height:17px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
 .mbody{padding:18px 24px;overflow-y:auto;flex:1}
 .field{margin-bottom:11px}
 .field label{display:block;font-size:12px;font-weight:600;color:#6B3A2A;margin-bottom:4px}
-.field input,.field textarea{width:100%;padding:8px 12px;border-radius:8px;border:1px solid #E5DDD5;font-size:14px;color:#3D2B1F;background:#FDFAF7;outline:none;transition:border-color .2s;box-sizing:border-box}
+.field input,.field textarea{width:100%;padding:8px 12px;border-radius:8px;border:1px solid #E5DDD5;font-size:14px;color:#3D2B1F;background:#FDFAF7;outline:none;box-sizing:border-box}
 .field input:focus,.field textarea:focus{border-color:#8B5E3C}
 .field textarea{resize:vertical}
 .frow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .sumbox{background:#F9F5F0;border-radius:10px;padding:10px 14px;margin-bottom:14px;border:1px solid #EDE5DC}
 .sumttl{font-size:12px;color:#8B5E3C;font-weight:700;margin-bottom:7px}
-.sumrow{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:7px;cursor:pointer;margin-bottom:3px;transition:background .15s}
+.sumrow{display:flex;gap:8px;align-items:center;padding:5px 8px;border-radius:7px;cursor:pointer;margin-bottom:3px}
 .sumbadge{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;flex-shrink:0}
 .mfooter{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.btn{padding:10px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;border:none;font-family:'Sarabun',sans-serif}
-.btn-cancel{background:none;border:1px solid #ddd;color:#666}
-.btn-save{color:#fff;font-weight:700}
-.btn-del{background:none;border:1px solid #EF4444;color:#EF4444;padding:9px 14px;font-size:13px;border-radius:8px;cursor:pointer;font-family:'Sarabun',sans-serif}
-.dconf{display:flex;gap:8px;align-items:center}
-.dconf span{font-size:12px;color:#EF4444}
+.mbtn{padding:10px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;border:none;font-family:'Sarabun',sans-serif}
+.mbtn-cancel{background:none;border:1px solid #ddd;color:#666}
+.mbtn-save{color:#fff;font-weight:700}
+.mbtn-del{background:none;border:1px solid #EF4444;color:#EF4444;padding:9px 14px;font-size:13px;border-radius:8px;cursor:pointer;font-family:'Sarabun',sans-serif}
+.dconf{display:flex;gap:8px;align-items:center;font-size:12px;color:#EF4444}
 .dconf-yes{background:#EF4444;color:#fff;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif;font-weight:700}
 .dconf-no{background:none;border:1px solid #ccc;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif}
-.toast{position:fixed;bottom:24px;right:24px;z-index:2000;color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);font-size:15px;animation:slideUp .3s ease;pointer-events:none}
-@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-/* Setup styles */
-.setup{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.setup-card{background:#fff;border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.08);width:100%;max-width:620px}
-.stepbar{display:flex;align-items:center;margin-bottom:28px}
-.sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.sline{flex:1;height:2px;margin:0 4px}
-pre.codeblock{background:#1E1E2E;color:#CDD6F4;border-radius:10px;padding:14px 16px;font-size:11.5px;overflow-x:auto;max-height:220px;font-family:monospace;line-height:1.5;white-space:pre;margin:0}
-.copybtn{display:block;margin-top:8px;padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Sarabun',sans-serif;background:#45475A;color:#fff;transition:background .2s}
-.url-input{width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #C4A882;font-size:14px;font-family:'Sarabun',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px}
-.url-input:focus{border-color:#6B3A2A}
-.connect-btn{width:100%;padding:12px;border-radius:8px;border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Sarabun',sans-serif;background:#6B3A2A;color:#fff;transition:background .2s}
-.connect-btn:hover{background:#8B5E3C}
-.tres{padding:10px 14px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.toast{position:fixed;bottom:24px;right:24px;z-index:2000;color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.2);font-size:15px;animation:su .3s ease;pointer-events:none}
+@keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.loading-txt{text-align:center;padding:60px;color:#999}
 .settbox{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
-@media(max-width:600px){.frow{grid-template-columns:1fr 1fr}.header{padding:16px 16px 14px}.htitle{font-size:18px}.main{padding:12px 8px}}
+@media(max-width:600px){.frow{grid-template-columns:1fr 1fr}.header{padding:16px}.htitle{font-size:18px}.amain{padding:12px 8px}}
 </style>
 </head>
 <body>
-<div id="app"></div>
+
+<!-- ══ SETUP PAGE ══════════════════════════════════════════════════ -->
+<div id="setup-page">
+  <div class="sw">
+    <div class="stitle">
+      <div class="icon">🗓️</div>
+      <h1>ตั้งค่าระบบจองห้องประชุม</h1>
+      <p>เชื่อมต่อกับ Google Sheets เพื่อให้ข้อมูลซิงค์ได้จากทุกอุปกรณ์</p>
+    </div>
+
+    <div class="stepbar">
+      <div class="sdot done" id="dot1">1</div>
+      <div class="sline" id="line1"></div>
+      <div class="sdot" id="dot2">2</div>
+      <div class="sline" id="line2"></div>
+      <div class="sdot" id="dot3">3</div>
+    </div>
+
+    <div class="scard">
+      <!-- Step 1 -->
+      <div id="step1">
+        <h2>ขั้นตอนที่ 1: สร้าง Google Sheet</h2>
+        <p>
+          1. เปิด <a href="https://sheets.google.com/create" target="_blank" style="color:#6B3A2A;font-weight:600">sheets.google.com</a> แล้วสร้าง Spreadsheet ใหม่<br>
+          2. ตั้งชื่อตามต้องการ เช่น <strong>"ตารางจองห้อง 2569"</strong><br>
+          3. คลิก <strong>Extensions → Apps Script</strong> ที่เมนูด้านบน<br>
+          4. ลบโค้ดเดิมออกทั้งหมด แล้วไปขั้นตอนถัดไป
+        </p>
+        <div class="btn-row">
+          <a href="https://sheets.google.com/create" target="_blank" class="btn btn-secondary">📊 เปิด Google Sheets</a>
+          <button class="btn btn-primary" onclick="gotoStep(2)">ถัดไป →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" style="display:none">
+        <h2>ขั้นตอนที่ 2: วาง Script และ Deploy</h2>
+        <p>
+          1. คัดลอกโค้ดด้านล่าง → วางใน Apps Script ทับโค้ดเดิม<br>
+          2. กด <strong>Save (Ctrl+S)</strong><br>
+          3. คลิก <strong>Run → getSheet</strong> เพื่อ Authorize (สำคัญมาก!)<br>
+          4. คลิก <strong>Deploy → New deployment → Web app</strong><br>
+          5. Execute as: <strong>Me</strong> · Who has access: <strong>Anyone</strong><br>
+          6. กด Deploy แล้วคัดลอก URL ที่ขึ้นมา
+        </p>
+        <pre class="codeblock" id="gasCode"></pre>
+        <div class="copy-row">
+          <button class="btn-copy" id="copyBtn" onclick="copyCode()">📋 คัดลอกโค้ด</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="gotoStep(1)">← ย้อนกลับ</button>
+          <button class="btn btn-primary" onclick="gotoStep(3)">Deploy แล้ว ถัดไป →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="step3" style="display:none">
+        <h2>ขั้นตอนที่ 3: ใส่ Web App URL</h2>
+        <p>วาง URL ที่ได้จากการ Deploy Apps Script ด้านล่าง (ต้องลงท้ายด้วย <strong>/exec</strong>)</p>
+        <label class="url-label" for="urlBox">Web App URL</label>
+        <input type="text" id="urlBox" class="url-input" placeholder="https://script.google.com/macros/s/.../exec"/>
+        <div id="test-result"></div>
+        <button class="btn-full" id="connectBtn" onclick="doConnect()">🔗 ทดสอบและเชื่อมต่อ</button>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn btn-outline" onclick="gotoStep(2)">← ย้อนกลับ</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="setup-hint">ตั้งค่าครั้งเดียว ข้อมูลซิงค์ทุกอุปกรณ์ผ่าน Google Sheets ของคุณ</p>
+  </div>
+</div>
+
+<!-- ══ APP PAGE ════════════════════════════════════════════════════ -->
+<div id="app-page">
+  <div class="header">
+    <div class="hinner">
+      <div class="htop">
+        <div>
+          <div class="hsub">ระบบจองห้องประชุม · Google Sheets</div>
+          <h1 class="htitle">ตารางรับจองห้องประชุม พ.ศ. 2569</h1>
+        </div>
+        <div class="hbtns">
+          <button class="hbtn act" id="btnTable" onclick="setView('table')">📅 ตาราง</button>
+          <button class="hbtn inact" id="btnList" onclick="setView('list')">📋 รายการ</button>
+          <button class="hbtn out" onclick="showSettings()">⚙️ ตั้งค่า</button>
+        </div>
+      </div>
+      <div class="pills" id="pillsRow"></div>
+    </div>
+  </div>
+
+  <div class="mtabs">
+    <div class="mtabs-in" id="monthTabs"></div>
+  </div>
+
+  <div class="amain">
+    <div class="main-top">
+      <h2 class="main-ttl" id="monthTitle"></h2>
+      <div class="main-hint">คลิกช่องเพื่อเพิ่ม/แก้ไขการจอง · สูงสุด 3 รายการ/ห้อง/วัน</div>
+    </div>
+    <div id="mainContent"></div>
+  </div>
+</div>
+
+<!-- Settings overlay -->
+<div id="settOverlay" class="overlay" style="display:none" onclick="if(event.target===this)closeSettings()">
+  <div class="settbox">
+    <h3 style="margin-bottom:16px;color:#3D2B1F">⚙️ ตั้งค่าระบบ</h3>
+    <p style="color:#666;font-size:14px">ข้อมูลถูกเชื่อมต่อกับ Google Sheets แล้ว</p>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="mbtn mbtn-cancel" style="flex:1" onclick="closeSettings()">ปิด</button>
+      <button class="mbtn mbtn-save btn-danger" style="flex:1" onclick="resetUrl()">🔄 เปลี่ยน URL ใหม่</button>
+    </div>
+  </div>
+</div>
+
+<!-- Booking modal -->
+<div id="bkOverlay" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="bkModal"></div>
+</div>
+
 <script>
 // ── Constants ──────────────────────────────────────────────────────────────
 const ROOMS=["พนาลัย","ไพรวัณ","ห้องอาหารจันทร์ลอย","เทอเรสสระว่ายน้ำ"];
@@ -120,7 +270,6 @@ const DSH=["อา","จ","อ","พ","พฤ","ศ","ส"];
 const DC={0:"#B91C1C",6:"#1D4ED8"};
 const BY=2569,CY=2026,MAX=3;
 const ES={customerName:"",eventName:"",timeStart:"",timeEnd:"",pax:"",note:""};
-const eSlots=()=>[{...ES},{...ES},{...ES}];
 
 const GAS_CODE=`const SHEET_NAME = "RoomBookings";
 
@@ -179,49 +328,26 @@ function respond(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }`;
 
+// ── State ──────────────────────────────────────────────────────────────────
+let gasUrl = localStorage.getItem("gasUrl")||"";
+let currentMonth = new Date().getMonth();
+let bookings = {};
+let viewMode = "table";
+let modalState = null; // {day,room,key,slots,activeSlot,deleteConfirm}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 function dim(m){return new Date(CY,m+1,0).getDate();}
 function dow(m,d){return new Date(CY,m,d).getDay();}
 function bKey(m,d,r){return `bk-${BY}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}-${r}`;}
-function ok(s){return s&&s.customerName&&s.customerName.trim()!=="";}
+function filled(s){return s&&s.customerName&&s.customerName.trim()!=="";}
 function norm(raw){
-  if(!raw)return eSlots();
+  if(!raw)return [{...ES},{...ES},{...ES}];
   try{
     const p=typeof raw==="string"?JSON.parse(raw):raw;
     if(Array.isArray(p)){const a=p.map(s=>({...ES,...s}));while(a.length<MAX)a.push({...ES});return a;}
     return [{...ES,...p},{...ES},{...ES}];
-  }catch{return eSlots();}
+  }catch{return [{...ES},{...ES},{...ES}];}
 }
-
-// ── State ──────────────────────────────────────────────────────────────────
-let S={
-  gasUrl: localStorage.getItem("gasUrl")||"",
-  month: new Date().getMonth(),
-  bookings:{}, loading:false,
-  modal:null, slots:eSlots(), activeSlot:0, saving:false,
-  viewMode:"table", showSettings:false, deleteConfirm:false,
-  testing:false, testResult:null,
-  setupStep:1, copied:false
-};
-function ss(p){Object.assign(S,p);render();}
-
-// ── API ────────────────────────────────────────────────────────────────────
-async function apiCall(params){
-  const qs=new URLSearchParams(params).toString();
-  const res=await fetch(S.gasUrl+"?"+qs,{redirect:"follow"});
-  return res.json();
-}
-async function loadBk(){
-  if(!S.gasUrl)return;
-  ss({loading:true});
-  try{
-    const raw=await apiCall({action:"getAll",prefix:`bk-${BY}-`});
-    const b={};
-    for(const[k,v]of Object.entries(raw)){try{b[k]=norm(v);}catch{}}
-    ss({bookings:b,loading:false});
-  }catch(e){toast("โหลดข้อมูลไม่สำเร็จ: "+e.message,"err");ss({loading:false});}
-}
-
 function toast(msg,type){
   const t=document.createElement("div");
   t.className="toast";
@@ -231,442 +357,372 @@ function toast(msg,type){
   setTimeout(()=>t.remove(),2800);
 }
 
-// ── Setup actions ──────────────────────────────────────────────────────────
-function goConnect(){
-  const inp=document.getElementById("urlInput");
-  const url=inp?inp.value.trim():"";
-  if(!url){inp&&inp.focus();return;}
-  S.gasUrl=url;
-  ss({testing:true,testResult:null});
-  apiCall({action:"getAll",prefix:"test-"}).then(res=>{
-    if(typeof res==="object"&&!res.error){
-      localStorage.setItem("gasUrl",S.gasUrl);
-      ss({testing:false,testResult:"ok"});
-      setTimeout(()=>loadBk(),900);
-    }else{
-      S.gasUrl="";
-      ss({testing:false,testResult:"error: "+(res.error||"เชื่อมต่อไม่ได้")});
-    }
-  }).catch(e=>{
-    S.gasUrl="";
-    ss({testing:false,testResult:"error: "+e.message});
+// ── API ────────────────────────────────────────────────────────────────────
+async function api(params){
+  const qs=new URLSearchParams(params).toString();
+  const res=await fetch(gasUrl+"?"+qs,{redirect:"follow"});
+  return res.json();
+}
+
+// ── Setup ──────────────────────────────────────────────────────────────────
+document.getElementById("gasCode").textContent = GAS_CODE;
+
+function gotoStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById("step"+i).style.display = i===n?"block":"none";
+    document.getElementById("dot"+i).className = "sdot"+(i<=n?" done":"");
+    if(i<3) document.getElementById("line"+i).className = "sline"+(i<n?" done":"");
   });
 }
-function resetUrl(){localStorage.removeItem("gasUrl");ss({gasUrl:"",bookings:{},showSettings:false,setupStep:1});}
-async function copyCode(){
-  try{await navigator.clipboard.writeText(GAS_CODE);ss({copied:true});setTimeout(()=>ss({copied:false}),2000);}
-  catch{alert("ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาเลือกโค้ดแล้ว Ctrl+C ครับ");}
+
+function copyCode(){
+  navigator.clipboard.writeText(GAS_CODE).then(()=>{
+    const btn=document.getElementById("copyBtn");
+    btn.textContent="✓ คัดลอกแล้ว!";
+    btn.className="btn-copy copied";
+    setTimeout(()=>{btn.textContent="📋 คัดลอกโค้ด";btn.className="btn-copy";},2000);
+  }).catch(()=>{
+    alert("กรุณาคลิกที่โค้ดแล้ว Ctrl+A จากนั้น Ctrl+C เพื่อคัดลอกครับ");
+  });
 }
 
-// ── Booking actions ────────────────────────────────────────────────────────
-function openModal(day,room){
-  const key=bKey(S.month,day,room);
-  const slots=norm(S.bookings[key]||null);
-  const fe=slots.findIndex(s=>!ok(s));
-  ss({modal:{day,room,key},slots,activeSlot:fe>=0?fe:0,deleteConfirm:false});
-}
-function closeModal(){ss({modal:null,slots:eSlots(),deleteConfirm:false});}
+async function doConnect(){
+  const url = document.getElementById("urlBox").value.trim();
+  const resultEl = document.getElementById("test-result");
+  const btn = document.getElementById("connectBtn");
 
-function updField(field,val){
-  const sl=[...S.slots];
-  sl[S.activeSlot]={...sl[S.activeSlot],[field]:val};
-  ss({slots:sl});
-}
-async function saveBk(){
-  if(!S.slots.some(ok)){toast("กรุณากรอกชื่อลูกค้าอย่างน้อย 1 รายการ","err");return;}
-  ss({saving:true});
+  if(!url){
+    resultEl.textContent="⚠️ กรุณาวาง URL ก่อนครับ";
+    resultEl.className="tres res-err";
+    resultEl.style.display="block";
+    return;
+  }
+
+  btn.textContent="⏳ กำลังทดสอบ...";
+  btn.style.background="#AAA";
+  resultEl.style.display="none";
+
   try{
-    await apiCall({action:"set",key:S.modal.key,value:JSON.stringify(S.slots)});
-    const b={...S.bookings,[S.modal.key]:[...S.slots]};
-    toast(`บันทึกเรียบร้อย (${S.slots.filter(ok).length} รายการ)`);
-    ss({bookings:b,saving:false});closeModal();
-  }catch(e){toast("บันทึกไม่สำเร็จ: "+e.message,"err");ss({saving:false});}
-}
-async function clearSlot(){
-  const sl=S.slots.map((s,i)=>i===S.activeSlot?{...ES}:s);
-  ss({slots:sl,deleteConfirm:false});
-  if(sl.every(s=>!ok(s))){
-    try{
-      await apiCall({action:"delete",key:S.modal.key});
-      const b={...S.bookings};delete b[S.modal.key];
-      toast("ลบข้อมูลเรียบร้อย");ss({bookings:b});closeModal();
-    }catch(e){toast("ลบไม่สำเร็จ: "+e.message,"err");}
+    gasUrl = url;
+    const res = await api({action:"getAll",prefix:"test-"});
+    if(typeof res==="object" && !res.error){
+      localStorage.setItem("gasUrl", url);
+      resultEl.textContent="✅ เชื่อมต่อสำเร็จ! กำลังเปิดโปรแกรม...";
+      resultEl.className="tres res-ok";
+      resultEl.style.display="block";
+      setTimeout(()=>startApp(),900);
+    } else {
+      gasUrl="";
+      resultEl.textContent="⚠️ เชื่อมต่อไม่สำเร็จ: "+(res.error||"ไม่ทราบสาเหตุ");
+      resultEl.className="tres res-err";
+      resultEl.style.display="block";
+      btn.textContent="🔗 ทดสอบและเชื่อมต่อ";
+      btn.style.background="#6B3A2A";
+    }
+  } catch(e){
+    gasUrl="";
+    resultEl.textContent="⚠️ Error: "+e.message;
+    resultEl.className="tres res-err";
+    resultEl.style.display="block";
+    btn.textContent="🔗 ทดสอบและเชื่อมต่อ";
+    btn.style.background="#6B3A2A";
   }
 }
 
-// ── DOM Builder ────────────────────────────────────────────────────────────
-function mk(tag,cls,style,children,events){
-  const e=document.createElement(tag);
-  if(cls)e.className=cls;
-  if(style)Object.assign(e.style,style);
-  for(const[ev,fn]of Object.entries(events||{}))e.addEventListener(ev,fn);
-  for(const c of(children||[])){
-    if(c==null||c===false)continue;
-    e.appendChild(typeof c==="string"?document.createTextNode(c):c);
-  }
-  return e;
-}
-const D=(cls,style,ch,ev)=>mk("div",cls,style,ch,ev);
-const B=(cls,style,ch,ev)=>mk("button",cls,style,ch,ev);
-const Sp=(cls,style,ch)=>mk("span",cls,style,ch);
-const T=(tag,cls,style,ch)=>mk(tag,cls,style,ch);
-
-// ── Setup Render ───────────────────────────────────────────────────────────
-function renderSetup(){
-  const s=S;
-  const dotStyle=(n)=>({background:s.setupStep>=n?"#6B3A2A":"#E5DDD5",color:s.setupStep>=n?"#fff":"#AAA"});
-
-  // Step content
-  let body;
-  if(s.setupStep===1){
-    body=D("",{},[
-      T("h2","",{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"},["ขั้นตอนที่ 1: สร้าง Google Sheet"]),
-      D("",{color:"#666",fontSize:"14px",lineHeight:"1.8",marginBottom:"16px"},[
-        "1. เปิด ",mk("a","",{color:"#6B3A2A",fontWeight:"600"},[" sheets.google.com "],{click:()=>window.open("https://sheets.google.com","_blank")}),
-        " แล้วสร้าง Spreadsheet ใหม่",mk("br"),
-        "2. ตั้งชื่อตามต้องการ เช่น ",mk("strong","",{},["\"ตารางจองห้อง 2569\""]),mk("br"),
-        "3. คลิก ",mk("strong","",{},["Extensions → Apps Script"]),mk("br"),
-        "4. ลบโค้ดเดิมออกทั้งหมด แล้วไปขั้นตอนถัดไป"
-      ]),
-      D("",{display:"flex",gap:"10px"},[
-        mk("a","btn btn-save",{background:"#4A7C59",display:"inline-block",textDecoration:"none"},["📊 เปิด Google Sheets"],{click:()=>window.open("https://sheets.google.com/create","_blank")}),
-        B("btn btn-save",{background:"#6B3A2A"},["ถัดไป →"],{click:()=>ss({setupStep:2})})
-      ])
-    ]);
-  } else if(s.setupStep===2){
-    body=D("",{},[
-      T("h2","",{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"},["ขั้นตอนที่ 2: วาง Script และ Deploy"]),
-      D("",{color:"#666",fontSize:"14px",lineHeight:"1.8",marginBottom:"12px"},[
-        "1. คัดลอกโค้ดด้านล่าง → วางใน Apps Script ทับโค้ดเดิม",mk("br"),
-        "2. กด ",mk("strong","",{},["Save (Ctrl+S)"]),mk("br"),
-        "3. คลิก ",mk("strong","",{},["Run → getSheet"])," เพื่อ Authorize (สำคัญ!)",mk("br"),
-        "4. คลิก ",mk("strong","",{},["Deploy → New deployment → Web app"]),mk("br"),
-        "5. Execute as: ",mk("strong","",{},["Me"])," · Who has access: ",mk("strong","",{},["Anyone"]),mk("br"),
-        "6. กด Deploy แล้วคัดลอก URL ที่ขึ้นมา"
-      ]),
-      mk("pre","codeblock",{},[GAS_CODE]),
-      B("copybtn",{marginTop:"8px",background:s.copied?"#4A7C59":"#45475A"},
-        [s.copied?"✓ คัดลอกแล้ว!":"📋 คัดลอกโค้ด"],{click:copyCode}),
-      D("",{display:"flex",gap:"10px",marginTop:"16px"},[
-        B("btn btn-cancel",{},["← ย้อนกลับ"],{click:()=>ss({setupStep:1})}),
-        B("btn btn-save",{background:"#6B3A2A"},["Deploy แล้ว ถัดไป →"],{click:()=>ss({setupStep:3})})
-      ])
-    ]);
-  } else {
-    // Step 3 — No re-render on typing, read from DOM directly
-    const inp=mk("input","url-input",{});
-    inp.id="urlInput";
-    inp.type="text";
-    inp.placeholder="https://script.google.com/macros/s/.../exec";
-    inp.value=S.gasUrl||"";
-
-    const trEl=s.testResult?D("tres",{
-      background:s.testResult==="ok"?"#DCFCE7":"#FEE2E2",
-      color:s.testResult==="ok"?"#16A34A":"#DC2626",
-      marginBottom:"10px"
-    },[(s.testResult==="ok"?"✅ เชื่อมต่อสำเร็จ! กำลังเปิดโปรแกรม...":"⚠️ "+s.testResult)]):null;
-
-    const connBtn=B("connect-btn",{background:s.testing?"#AAA":"#6B3A2A"},
-      [s.testing?"⏳ กำลังทดสอบการเชื่อมต่อ...":"🔗 ทดสอบและเชื่อมต่อ"],
-      {click:goConnect});
-
-    body=D("",{},[
-      T("h2","",{color:"#3D2B1F",fontSize:"18px",marginBottom:"8px"},["ขั้นตอนที่ 3: ใส่ Web App URL"]),
-      D("",{color:"#666",fontSize:"14px",marginBottom:"16px"},["วาง URL ที่ได้จาก Deploy Apps Script ด้านล่าง (ต้องลงท้ายด้วย /exec)"]),
-      T("label","",{display:"block",fontSize:"13px",fontWeight:"600",color:"#6B3A2A",marginBottom:"6px"},["Web App URL"]),
-      inp,
-      trEl,
-      connBtn,
-      D("",{marginTop:"10px"},[
-        B("btn btn-cancel",{},["← ย้อนกลับ"],{click:()=>ss({setupStep:2})})
-      ])
-    ]);
-  }
-
-  return D("setup",{},[
-    D("",{width:"100%",maxWidth:"620px"},[
-      D("",{textAlign:"center",marginBottom:"32px"},[
-        D("",{fontSize:"40px",marginBottom:"8px"},["🗓️"]),
-        T("h1","",{fontFamily:"'Playfair Display',serif",color:"#3D2B1F",fontSize:"24px"},["ตั้งค่าระบบจองห้องประชุม"]),
-        D("",{color:"#888",marginTop:"8px",fontSize:"15px"},["เชื่อมต่อกับ Google Sheets เพื่อให้ข้อมูลซิงค์ได้จากทุกอุปกรณ์"])
-      ]),
-      // Step bar
-      D("stepbar",{},[
-        D("sdot",dotStyle(1),["1"]),
-        D("sline",{background:s.setupStep>1?"#6B3A2A":"#E5DDD5"}),
-        D("sdot",dotStyle(2),["2"]),
-        D("sline",{background:s.setupStep>2?"#6B3A2A":"#E5DDD5"}),
-        D("sdot",dotStyle(3),["3"])
-      ]),
-      D("setup-card",{},[body]),
-      D("",{textAlign:"center",color:"#BBB",fontSize:"12px",marginTop:"16px"},["ตั้งค่าครั้งเดียว ข้อมูลซิงค์ทุกอุปกรณ์ผ่าน Google Sheets ของคุณ"])
-    ])
-  ]);
+// ── App boot ───────────────────────────────────────────────────────────────
+function startApp(){
+  document.getElementById("setup-page").style.display="none";
+  document.getElementById("app-page").style.display="block";
+  buildMonthTabs();
+  loadBookings();
 }
 
-// ── App Render ─────────────────────────────────────────────────────────────
-function renderApp(){
-  const s=S;
-  const days=dim(s.month);
-  const mc=ROOMS.map(room=>{
+function resetUrl(){
+  localStorage.removeItem("gasUrl");
+  gasUrl="";
+  bookings={};
+  document.getElementById("settOverlay").style.display="none";
+  document.getElementById("app-page").style.display="none";
+  document.getElementById("setup-page").style.display="flex";
+  gotoStep(1);
+  document.getElementById("urlBox").value="";
+  document.getElementById("test-result").style.display="none";
+}
+
+function showSettings(){document.getElementById("settOverlay").style.display="flex";}
+function closeSettings(){document.getElementById("settOverlay").style.display="none";}
+
+// ── Load bookings ──────────────────────────────────────────────────────────
+async function loadBookings(){
+  document.getElementById("mainContent").innerHTML='<div class="loading-txt">⏳ กำลังโหลดข้อมูลจาก Google Sheets...</div>';
+  try{
+    const raw=await api({action:"getAll",prefix:`bk-${BY}-`});
+    bookings={};
+    for(const[k,v] of Object.entries(raw)){try{bookings[k]=norm(v);}catch{}}
+  }catch(e){toast("โหลดข้อมูลไม่สำเร็จ: "+e.message,"err");}
+  renderContent();
+}
+
+// ── Month tabs ─────────────────────────────────────────────────────────────
+function buildMonthTabs(){
+  const el=document.getElementById("monthTabs");
+  el.innerHTML="";
+  MSH.forEach((m,i)=>{
+    const b=document.createElement("button");
+    b.className="mtab"+(i===currentMonth?" act":"");
+    b.textContent=m;
+    b.onclick=()=>{currentMonth=i;buildMonthTabs();loadBookings();};
+    el.appendChild(b);
+  });
+}
+
+// ── View ───────────────────────────────────────────────────────────────────
+function setView(v){
+  viewMode=v;
+  document.getElementById("btnTable").className="hbtn "+(v==="table"?"act":"inact");
+  document.getElementById("btnList").className="hbtn "+(v==="list"?"act":"inact");
+  renderContent();
+}
+
+function renderContent(){
+  const days=dim(currentMonth);
+  document.getElementById("monthTitle").textContent=MTH[currentMonth]+" "+BY;
+  updatePills(days);
+  const el=document.getElementById("mainContent");
+  el.innerHTML="";
+  el.appendChild(viewMode==="table"?buildTable(days):buildList(days));
+}
+
+function updatePills(days){
+  const el=document.getElementById("pillsRow");
+  el.innerHTML="";
+  ROOMS.forEach((r,i)=>{
     let c=0;
-    for(let d=1;d<=days;d++){const b=s.bookings[bKey(s.month,d,room)];if(b&&b.some(ok))c++;}
-    return c;
+    for(let d=1;d<=days;d++){const b=bookings[bKey(currentMonth,d,r)];if(b&&b.some(filled))c++;}
+    el.innerHTML+=`<div class="pill" style="border-left:3px solid ${RC[i]}"><div class="pill-n">${r}</div><div class="pill-c">จอง ${c} วัน</div></div>`;
   });
-
-  const header=D("header",{},[
-    D("hinner",{},[
-      D("htop",{},[
-        D("",{},[
-          D("hsub",{},["ระบบจองห้องประชุม · Google Sheets"]),
-          T("h1","htitle",{},[`ตารางรับจองห้องประชุม พ.ศ. ${BY}`])
-        ]),
-        D("hbtns",{},[
-          B("hbtn "+(s.viewMode==="table"?"act":"inact"),{},["📅 ตาราง"],{click:()=>ss({viewMode:"table"})}),
-          B("hbtn "+(s.viewMode==="list"?"act":"inact"),{},["📋 รายการ"],{click:()=>ss({viewMode:"list"})}),
-          B("hbtn out",{},["⚙️ ตั้งค่า"],{click:()=>ss({showSettings:true})})
-        ])
-      ]),
-      D("pills",{},ROOMS.map((r,i)=>
-        D("pill",{borderLeft:`3px solid ${RC[i]}`},[
-          D("pill-n",{},[r]),
-          D("pill-c",{},[`จอง ${mc[i]} วัน`])
-        ])
-      ))
-    ])
-  ]);
-
-  const mtabs=D("mtabs",{},[
-    D("mtabs-in",{},MSH.map((m,i)=>
-      B("mtab"+(s.month===i?" act":""),{},{},
-        [m],{click:()=>{ss({month:i});setTimeout(loadBk,50);}})
-    ))
-  ]);
-
-  let content;
-  if(s.loading){
-    content=D("",{textAlign:"center",padding:"60px",color:"#999"},[
-      D("",{fontSize:"28px",marginBottom:"8px"},["⏳"]),
-      "กำลังโหลดข้อมูลจาก Google Sheets..."
-    ]);
-  } else if(s.viewMode==="table"){
-    content=renderTable(s,days);
-  } else {
-    content=renderList(s,days);
-  }
-
-  const main=D("main",{},[
-    D("main-top",{},[
-      T("h2","main-ttl",{},[`${MTH[s.month]} ${BY}`]),
-      D("main-hint",{},["คลิกช่องเพื่อเพิ่ม/แก้ไขการจอง · สูงสุด 3 รายการ/ห้อง/วัน"])
-    ]),
-    content
-  ]);
-
-  const modal=s.modal?renderModal(s):null;
-  const settings=s.showSettings?renderSettings():null;
-  return D("",{},[header,mtabs,main,modal,settings].filter(Boolean));
 }
 
-// ── Table Render ───────────────────────────────────────────────────────────
-function renderTable(s,days){
-  const thead=mk("thead","",{},[
-    mk("tr","",{},[
-      T("th","dcol",{},["วันที่"]),
-      ...ROOMS.map((r,i)=>T("th","",{borderLeft:`3px solid ${RC[i]}`},[r]))
-    ])
-  ]);
-  const rows=[];
+// ── Table ──────────────────────────────────────────────────────────────────
+function buildTable(days){
+  const wrap=document.createElement("div");
+  wrap.className="twrap";
+  const tbl=document.createElement("table");
+  const thead=document.createElement("thead");
+  thead.innerHTML=`<tr><th class="dcol">วันที่</th>${ROOMS.map((r,i)=>`<th style="border-left:3px solid ${RC[i]}">${r}</th>`).join("")}</tr>`;
+  tbl.appendChild(thead);
+  const tbody=document.createElement("tbody");
   for(let day=1;day<=days;day++){
-    const dw=dow(s.month,day);
+    const dw=dow(currentMonth,day);
     const bg=dw===0?"#FFF5F5":dw===6?"#F5F8FF":day%2===0?"#FAFAF8":"#fff";
-    const cells=[
-      mk("td","dcell",{},[
-        D("dnum",{color:DC[dw]||"#3D2B1F"},[String(day)]),
-        D("dname",{color:DC[dw]||"#BBB"},[DSH[dw]])
-      ])
-    ];
+    const tr=document.createElement("tr");
+    tr.style.background=bg;
+    tr.innerHTML=`<td class="dcell"><div class="dnum" style="color:${DC[dw]||"#3D2B1F"}">${day}</div><div class="dname" style="color:${DC[dw]||"#BBB"}">${DSH[dw]}</div></td>`;
     ROOMS.forEach((room,ri)=>{
-      const bkd=s.bookings[bKey(s.month,day,room)];
-      const filled=bkd?bkd.filter(ok):[];
-      const cc=filled.length>0?[
-        ...filled.map(sl=>{
-          const oi=bkd.indexOf(sl);
-          return D("scard",{background:RL[ri],borderLeft:`3px solid ${SB[oi]||RC[ri]}`},[
-            D("scard-h",{},[
-              Sp("sbadge",{background:SB[oi]||RC[ri]},[String(oi+1)]),
-              Sp("sname",{color:RC[ri]},[sl.customerName])
-            ]),
-            sl.eventName?D("sevent",{},[sl.eventName]):null,
-            (sl.timeStart||sl.pax)?D("stime",{},[(sl.timeStart?`🕐${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}`:""),(sl.pax?` · ${sl.pax}คน`:"")]):null
-          ].filter(Boolean));
-        }),
-        filled.length<MAX?D("mh",{},["+ เพิ่ม"]):null
-      ].filter(Boolean):[D("ah",{},["+ เพิ่ม"])];
-
-      const td=mk("td","rcell",{borderLeft:`2px solid ${RC[ri]}22`},cc,{click:()=>openModal(day,room)});
-      td.addEventListener("mouseenter",()=>td.style.background=RL[ri]);
-      td.addEventListener("mouseleave",()=>td.style.background="transparent");
-      cells.push(td);
+      const td=document.createElement("td");
+      td.className="rcell";
+      td.style.borderLeft=`2px solid ${RC[ri]}22`;
+      const bk=bookings[bKey(currentMonth,day,room)];
+      const fSlots=bk?bk.filter(filled):[];
+      if(fSlots.length){
+        let html="";
+        fSlots.forEach(sl=>{
+          const oi=bk.indexOf(sl);
+          html+=`<div class="scard-b" style="background:${RL[ri]};border-left:3px solid ${SB[oi]||RC[ri]}">
+            <div class="scard-h"><span class="sbadge" style="background:${SB[oi]||RC[ri]}">${oi+1}</span><span class="sname" style="color:${RC[ri]}">${sl.customerName}</span></div>
+            ${sl.eventName?`<div class="sevent">${sl.eventName}</div>`:""}
+            ${sl.timeStart||sl.pax?`<div class="stime-t">${sl.timeStart?"🕐"+sl.timeStart+(sl.timeEnd?"-"+sl.timeEnd:""):""}${sl.pax?" · "+sl.pax+"คน":""}</div>`:""}
+          </div>`;
+        });
+        if(fSlots.length<MAX) html+=`<div class="mhint">+ เพิ่ม</div>`;
+        td.innerHTML=html;
+      } else {
+        td.innerHTML=`<div class="ah">+ เพิ่ม</div>`;
+      }
+      td.onclick=()=>openModal(day,room);
+      tbody.appendChild(tr);
+      tr.appendChild(td);
     });
-    rows.push(mk("tr","",{background:bg},cells));
+    tbody.appendChild(tr);
   }
-  return D("twrap",{},[mk("table","",{},[thead,mk("tbody","",{},rows)])]);
+  tbl.appendChild(tbody);
+  wrap.appendChild(tbl);
+  return wrap;
 }
 
-// ── List Render ────────────────────────────────────────────────────────────
-function renderList(s,days){
-  const items=[];
-  for(let dd=1;dd<=days;dd++){
+// ── List ───────────────────────────────────────────────────────────────────
+function buildList(days){
+  const wrap=document.createElement("div");
+  wrap.className="lwrap";
+  let any=false;
+  for(let d=1;d<=days;d++){
     ROOMS.forEach((room,ri)=>{
-      const bkd=s.bookings[bKey(s.month,dd,room)];
-      if(bkd&&bkd.some(ok))items.push({day:dd,room,ri,bkd});
+      const bk=bookings[bKey(currentMonth,d,room)];
+      if(!bk||!bk.some(filled))return;
+      any=true;
+      const dw=dow(currentMonth,d);
+      const card=document.createElement("div");
+      card.className="lcard";
+      card.style.borderLeft=`4px solid ${RC[ri]}`;
+      let shtml="";
+      bk.forEach((sl,i)=>{
+        if(!filled(sl))return;
+        shtml+=`<div class="lslot" style="background:${RL[ri]};border-left:3px solid ${SB[i]}">
+          <span class="lsbadge" style="background:${SB[i]}">${i+1}</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:#3D2B1F">${sl.customerName}</div>
+            ${sl.eventName?`<div style="color:#666;font-size:12px">${sl.eventName}</div>`:""}
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:2px">
+              ${sl.timeStart?`<span style="font-size:12px;color:#888">🕐 ${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}</span>`:""}
+              ${sl.pax?`<span style="font-size:12px;color:#888">👥 ${sl.pax} คน</span>`:""}
+              ${sl.note?`<span style="font-size:12px;color:#888">📝 ${sl.note}</span>`:""}
+            </div>
+          </div>
+        </div>`;
+      });
+      card.innerHTML=`
+        <div class="lday"><div class="ldnum" style="color:${DC[dw]||"#3D2B1F"}">${d}</div><div class="ldname" style="color:${DC[dw]||"#999"}">${DTH[dw]}</div></div>
+        <div style="flex:1"><div style="font-size:11px;font-weight:700;color:${RC[ri]};margin-bottom:7px">${room} · ${bk.filter(filled).length} รายการ</div><div class="lslots">${shtml}</div></div>`;
+      card.onclick=()=>openModal(d,room);
+      wrap.appendChild(card);
     });
   }
-  if(!items.length)return D("empty",{},[D("",{fontSize:"40px",marginBottom:"12px"},["📭"]),"ยังไม่มีการจองในเดือนนี้"]);
-  return D("lwrap",{},items.map(({day,room,ri,bkd})=>{
-    const dw=dow(s.month,day);
-    const card=D("lcard",{borderLeft:`4px solid ${RC[ri]}`},[
-      D("lday",{},[
-        D("ldnum",{color:DC[dw]||"#3D2B1F"},[String(day)]),
-        D("ldname",{color:DC[dw]||"#999"},[DTH[dw]])
-      ]),
-      D("",{flex:"1"},[
-        D("lrtitle",{color:RC[ri]},[`${room} · ${bkd.filter(ok).length} รายการ`]),
-        D("lslots",{},bkd.map((sl,i)=>{
-          if(!ok(sl))return null;
-          return D("lslot",{background:RL[ri],borderLeft:`3px solid ${SB[i]}`},[
-            Sp("lsbadge",{background:SB[i]},[String(i+1)]),
-            D("",{},[
-              D("",{fontWeight:"700",fontSize:"14px",color:"#3D2B1F"},[sl.customerName]),
-              sl.eventName?D("",{color:"#666",fontSize:"12px"},[sl.eventName]):null,
-              D("",{display:"flex",gap:"10px",marginTop:"2px",flexWrap:"wrap"},[
-                sl.timeStart?Sp("",{fontSize:"12px",color:"#888"},[`🕐 ${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}`]):null,
-                sl.pax?Sp("",{fontSize:"12px",color:"#888"},[`👥 ${sl.pax} คน`]):null,
-                sl.note?Sp("",{fontSize:"12px",color:"#888"},[`📝 ${sl.note}`]):null
-              ].filter(Boolean))
-            ])
-          ].filter(Boolean));
-        }).filter(Boolean))
-      ])
-    ],{},{click:()=>openModal(day,room)});
-    card.addEventListener("mouseenter",()=>card.style.boxShadow="0 4px 16px rgba(0,0,0,.12)");
-    card.addEventListener("mouseleave",()=>card.style.boxShadow="0 2px 8px rgba(0,0,0,.07)");
-    return card;
-  }));
+  if(!any){
+    const e=document.createElement("div");
+    e.className="empty-box";
+    e.innerHTML='<div style="font-size:40px;margin-bottom:12px">📭</div>ยังไม่มีการจองในเดือนนี้';
+    wrap.appendChild(e);
+  }
+  return wrap;
 }
 
-// ── Modal Render ───────────────────────────────────────────────────────────
-function renderModal(s){
-  const ri=ROOMS.indexOf(s.modal.room);
+// ── Modal ──────────────────────────────────────────────────────────────────
+function openModal(day,room){
+  const key=bKey(currentMonth,day,room);
+  const slots=norm(bookings[key]||null);
+  const fe=slots.findIndex(s=>!filled(s));
+  modalState={day,room,key,slots,activeSlot:fe>=0?fe:0,deleteConfirm:false};
+  renderModal();
+  document.getElementById("bkOverlay").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("bkOverlay").style.display="none";
+  modalState=null;
+}
+
+function renderModal(){
+  const {day,room,slots,activeSlot,deleteConfirm}=modalState;
+  const ri=ROOMS.indexOf(room);
   const rc=RC[ri];
-  const cur=s.slots[s.activeSlot]||{...ES};
-  const fc=s.slots.filter(ok).length;
+  const cur=slots[activeSlot]||{...ES};
+  const fc=slots.filter(filled).length;
 
-  function makeField(label,fd,type,ph,multi){
-    const inp=multi?mk("textarea","",{rows:"2"}):mk("input","",{type:type||"text"});
-    inp.value=cur[fd]||"";
-    inp.placeholder=ph||"";
-    inp.addEventListener("input",e=>updField(fd,e.target.value));
-    inp.addEventListener("focus",()=>inp.style.borderColor="#8B5E3C");
-    inp.addEventListener("blur",()=>inp.style.borderColor="#E5DDD5");
-    return D("field",{},[T("label","",{},[label]),inp]);
+  let tabsHtml=slots.map((sl,i)=>{
+    const f=filled(sl),ia=activeSlot===i;
+    const dotBg=f?(ia?SB[i]:"rgba(255,255,255,.35)"):"transparent";
+    const dotColor=f?"#fff":(ia?rc:"rgba(255,255,255,.6)");
+    const dotBorder=f?"none":`1.5px solid ${ia?rc+"99":"rgba(255,255,255,.5)"}`;
+    return `<button class="stab" style="background:${ia?"#fff":"rgba(255,255,255,.2)"};color:${ia?rc:"rgba(255,255,255,.85)"};font-weight:${ia?700:500}" onclick="setSlot(${i})">
+      <span class="stdot" style="background:${dotBg};color:${dotColor};border:${dotBorder}">${i+1}</span>
+      รายการที่ ${i+1}${f?" ✓":""}
+    </button>`;
+  }).join("");
+
+  let sumHtml="";
+  if(fc>0){
+    let rows=slots.map((sl,i)=>{
+      if(!filled(sl))return "";
+      return `<div class="sumrow" style="background:${activeSlot===i?RL[ri]:"transparent"}" onclick="setSlot(${i})">
+        <span class="sumbadge" style="background:${SB[i]}">${i+1}</span>
+        <span style="font-size:13px;color:#3D2B1F;font-weight:600;flex:1">${sl.customerName}</span>
+        ${sl.timeStart?`<span style="font-size:11px;color:#999">${sl.timeStart}${sl.timeEnd?"-"+sl.timeEnd:""}</span>`:""}
+        ${sl.pax?`<span style="font-size:11px;color:#999">${sl.pax}คน</span>`:""}
+      </div>`;
+    }).join("");
+    sumHtml=`<div class="sumbox"><div class="sumttl">📋 สรุปการจองวันนี้ (${fc}/${MAX})</div>${rows}</div>`;
   }
 
-  const tabs=s.slots.map((sl,i)=>{
-    const f=ok(sl),ia=s.activeSlot===i;
-    return B("stab",{
-      background:ia?"#fff":"rgba(255,255,255,.2)",
-      color:ia?rc:"rgba(255,255,255,.85)",fontWeight:ia?"700":"500"
-    },[
-      Sp("stdot",{
-        background:f?(ia?SB[i]:"rgba(255,255,255,.35)"):"transparent",
-        color:f?"#fff":(ia?rc:"rgba(255,255,255,.6)"),
-        border:f?"none":`1.5px solid ${ia?rc+"99":"rgba(255,255,255,.5)"}`
-      },[String(i+1)]),
-      `รายการที่ ${i+1}`,f?" ✓":""
-    ],{click:()=>ss({activeSlot:i,deleteConfirm:false})});
-  });
+  let delHtml="";
+  if(filled(cur)){
+    if(!deleteConfirm){
+      delHtml=`<button class="mbtn-del" onclick="setDeleteConfirm(true)">🗑 ลบรายการที่ ${activeSlot+1}</button>`;
+    } else {
+      delHtml=`<div class="dconf">ยืนยันลบ? <button class="dconf-yes" onclick="doDeleteSlot()">ยืนยัน</button><button class="dconf-no" onclick="setDeleteConfirm(false)">ยกเลิก</button></div>`;
+    }
+  }
 
-  const sum=fc>0?D("sumbox",{},[
-    D("sumttl",{},[`📋 สรุปการจองวันนี้ (${fc}/${MAX})`]),
-    ...s.slots.map((sl,i)=>{
-      if(!ok(sl))return null;
-      return D("sumrow",{background:s.activeSlot===i?RL[ri]:"transparent"},[
-        Sp("sumbadge",{background:SB[i]},[String(i+1)]),
-        Sp("",{fontSize:"13px",color:"#3D2B1F",fontWeight:"600",flex:"1"},[sl.customerName]),
-        sl.timeStart?Sp("",{fontSize:"11px",color:"#999"},[sl.timeStart+(sl.timeEnd?"-"+sl.timeEnd:"")]):null,
-        sl.pax?Sp("",{fontSize:"11px",color:"#999"},[sl.pax+"คน"]):null
-      ].filter(Boolean),{},{click:()=>ss({activeSlot:i})});
-    }).filter(Boolean)
-  ]):null;
+  function fld(label,fd,type,ph,multi){
+    const val=(cur[fd]||"").replace(/"/g,"&quot;");
+    if(multi) return `<div class="field"><label>${label}</label><textarea rows="2" oninput="updF('${fd}',this.value)" onfocus="this.style.borderColor='#8B5E3C'" onblur="this.style.borderColor='#E5DDD5'">${cur[fd]||""}</textarea></div>`;
+    return `<div class="field"><label>${label}</label><input type="${type||"text"}" value="${val}" placeholder="${ph||""}" oninput="updF('${fd}',this.value)" onfocus="this.style.borderColor='#8B5E3C'" onblur="this.style.borderColor='#E5DDD5'"/></div>`;
+  }
 
-  const delSec=ok(cur)?(
-    !s.deleteConfirm?
-      B("btn-del",{},["🗑 ลบรายการที่ "+(s.activeSlot+1)],{click:()=>ss({deleteConfirm:true})}):
-      D("dconf",{},[
-        Sp("",{fontSize:"12px",color:"#EF4444"},["ยืนยันลบ?"]),
-        B("dconf-yes",{},["ยืนยัน"],{click:clearSlot}),
-        B("dconf-no",{},["ยกเลิก"],{click:()=>ss({deleteConfirm:false})})
-      ])
-  ):null;
-
-  const ov=D("overlay",{},[ 
-    D("modal",{},[
-      D("mhead",{background:`linear-gradient(135deg,${rc},${rc}BB)`},[
-        D("mdate",{},[`${s.modal.day} ${MTH[s.month]} ${BY}`]),
-        D("mroom",{},[s.modal.room]),
-        D("stabs",{},tabs)
-      ]),
-      D("mbody",{},[
-        makeField("ชื่อลูกค้า / องค์กร *","customerName","text","กรอกชื่อลูกค้าหรือองค์กร"),
-        makeField("ชื่องาน / รายการ","eventName","text","เช่น ประชุมบอร์ด, สัมมนา"),
-        D("frow",{},[
-          makeField("เวลาเริ่ม","timeStart","time"),
-          makeField("เวลาสิ้นสุด","timeEnd","time"),
-          makeField("จำนวนคน","pax","number","0")
-        ]),
-        makeField("หมายเหตุ","note","text","ข้อมูลเพิ่มเติม",true),
-        sum,
-        D("mfooter",{},[
-          D("",{},[delSec].filter(Boolean)),
-          D("",{display:"flex",gap:"10px"},[
-            B("btn btn-cancel",{},["ยกเลิก"],{click:closeModal}),
-            B("btn btn-save",{background:rc,opacity:s.saving?.7:1},
-              [s.saving?"⏳ กำลังบันทึก...":"💾 บันทึกทั้งหมด"],
-              {click:saveBk})
-          ])
-        ])
-      ])
-    ])
-  ],{},{click:(e)=>{if(e.target===ov)closeModal();}});
-  return ov;
+  document.getElementById("bkModal").innerHTML=`
+    <div class="mhead" style="background:linear-gradient(135deg,${rc},${rc}BB)">
+      <div class="mdate">${day} ${MTH[currentMonth]} ${BY}</div>
+      <div class="mroom-t">${room}</div>
+      <div class="stabs">${tabsHtml}</div>
+    </div>
+    <div class="mbody">
+      ${fld("ชื่อลูกค้า / องค์กร *","customerName","text","กรอกชื่อลูกค้าหรือองค์กร")}
+      ${fld("ชื่องาน / รายการ","eventName","text","เช่น ประชุมบอร์ด, สัมมนา")}
+      <div class="frow">
+        ${fld("เวลาเริ่ม","timeStart","time")}
+        ${fld("เวลาสิ้นสุด","timeEnd","time")}
+        ${fld("จำนวนคน","pax","number","0")}
+      </div>
+      ${fld("หมายเหตุ","note","text","ข้อมูลเพิ่มเติม","multi")}
+      ${sumHtml}
+      <div class="mfooter">
+        <div>${delHtml}</div>
+        <div style="display:flex;gap:10px">
+          <button class="mbtn mbtn-cancel" onclick="closeModal()">ยกเลิก</button>
+          <button class="mbtn mbtn-save" style="background:${rc}" onclick="doSave()">💾 บันทึกทั้งหมด</button>
+        </div>
+      </div>
+    </div>`;
 }
 
-// ── Settings Render ────────────────────────────────────────────────────────
-function renderSettings(){
-  const ov=D("overlay",{},[
-    D("settbox",{},[
-      T("h3","",{marginBottom:"16px",color:"#3D2B1F"},["⚙️ ตั้งค่าระบบ"]),
-      D("",{color:"#666",fontSize:"14px"},["ข้อมูลถูกเชื่อมต่อกับ Google Sheets แล้ว"]),
-      D("",{display:"flex",gap:"10px",marginTop:"20px"},[
-        B("btn btn-cancel",{flex:"1"},["ปิด"],{click:()=>ss({showSettings:false})}),
-        B("btn btn-save",{flex:"1",background:"#EF4444"},["🔄 เปลี่ยน URL ใหม่"],{click:resetUrl})
-      ])
-    ])
-  ],{},{click:(e)=>{if(e.target===ov)ss({showSettings:false});}});
-  return ov;
+function setSlot(i){modalState.activeSlot=i;modalState.deleteConfirm=false;renderModal();}
+function setDeleteConfirm(v){modalState.deleteConfirm=v;renderModal();}
+function updF(field,val){modalState.slots[modalState.activeSlot][field]=val;}
+
+async function doSave(){
+  if(!modalState.slots.some(filled)){toast("กรุณากรอกชื่อลูกค้าอย่างน้อย 1 รายการ","err");return;}
+  const btn=document.querySelector("#bkModal .mbtn-save");
+  if(btn){btn.textContent="⏳ กำลังบันทึก...";btn.style.opacity=".7";}
+  try{
+    await api({action:"set",key:modalState.key,value:JSON.stringify(modalState.slots)});
+    bookings[modalState.key]=[...modalState.slots];
+    toast(`บันทึกเรียบร้อย (${modalState.slots.filter(filled).length} รายการ)`);
+    closeModal();
+    renderContent();
+  }catch(e){
+    toast("บันทึกไม่สำเร็จ: "+e.message,"err");
+    if(btn){btn.textContent="💾 บันทึกทั้งหมด";btn.style.opacity="1";}
+  }
 }
 
-// ── Main render ────────────────────────────────────────────────────────────
-function render(){
-  const root=document.getElementById("app");
-  root.innerHTML="";
-  root.appendChild(S.gasUrl?renderApp():renderSetup());
+async function doDeleteSlot(){
+  const sl=modalState.slots.map((s,i)=>i===modalState.activeSlot?{...ES}:s);
+  modalState.slots=sl;
+  modalState.deleteConfirm=false;
+  if(sl.every(s=>!filled(s))){
+    try{
+      await api({action:"delete",key:modalState.key});
+      delete bookings[modalState.key];
+      toast("ลบข้อมูลเรียบร้อย");
+      closeModal();
+      renderContent();
+    }catch(e){toast("ลบไม่สำเร็จ: "+e.message,"err");}
+  } else {
+    renderModal();
+  }
 }
 
-render();
-if(S.gasUrl) loadBk();
+// ── Boot ───────────────────────────────────────────────────────────────────
+if(gasUrl){ startApp(); } else { gotoStep(1); }
 </script>
 </body>
 </html>
