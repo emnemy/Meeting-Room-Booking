@@ -131,6 +131,8 @@ td.rcell:hover{opacity:.85}
 @keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .loading-txt{text-align:center;padding:60px;color:#999}
 .settbox{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:28px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.year-sel{padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:'Sarabun',sans-serif;background:#D4A96A;color:#3D2B1F;outline:none;min-width:90px}
+.year-sel:hover{background:#E0B87A}
 @media(max-width:600px){.frow{grid-template-columns:1fr 1fr}.header{padding:16px}.htitle{font-size:18px}.amain{padding:12px 8px}}
 </style>
 </head>
@@ -215,9 +217,10 @@ td.rcell:hover{opacity:.85}
       <div class="htop">
         <div>
           <div class="hsub">ระบบจองห้องประชุม · Google Sheets</div>
-          <h1 class="htitle">ตารางรับจองห้องประชุม พ.ศ. 2569</h1>
+          <h1 class="htitle" id="appTitle">ตารางรับจองห้องประชุม พ.ศ. 2569</h1>
         </div>
         <div class="hbtns">
+          <select id="yearSel" class="year-sel" onchange="setYear(+this.value)"></select>
           <button class="hbtn act" id="btnTable" onclick="setView('table')">📅 ตาราง</button>
           <button class="hbtn inact" id="btnList" onclick="setView('list')">📋 รายการ</button>
           <button class="hbtn out" onclick="showSettings()">⚙️ ตั้งค่า</button>
@@ -268,7 +271,9 @@ const MSH=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.
 const DTH=["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์"];
 const DSH=["อา","จ","อ","พ","พฤ","ศ","ส"];
 const DC={0:"#B91C1C",6:"#1D4ED8"};
-const BY=2569,CY=2026,MAX=3;
+const MAX=3;
+const BASE_BY=2569,BASE_CY=2026; // ปีเริ่มต้น (ปัจจุบัน)
+let BY=BASE_BY, CY=BASE_CY;
 const ES={customerName:"",eventName:"",timeStart:"",timeEnd:"",pax:"",note:""};
 
 const GAS_CODE=`const SHEET_NAME = "RoomBookings";
@@ -338,6 +343,14 @@ let modalState = null; // {day,room,key,slots,activeSlot,deleteConfirm}
 // ── Helpers ────────────────────────────────────────────────────────────────
 function dim(m){return new Date(CY,m+1,0).getDate();}
 function dow(m,d){return new Date(CY,m,d).getDay();}
+function setYear(by){
+  BY=by;CY=by-543;
+  document.getElementById("yearSel").value=by;
+  document.getElementById("appTitle").textContent="ตารางรับจองห้องประชุม พ.ศ. "+BY;
+  currentMonth=new Date().getMonth();
+  buildMonthTabs();
+  loadBookings();
+}
 function bKey(m,d,r){return `bk-${BY}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}-${r}`;}
 function filled(s){return s&&s.customerName&&s.customerName.trim()!=="";}
 function norm(raw){
@@ -433,6 +446,15 @@ async function doConnect(){
 function startApp(){
   document.getElementById("setup-page").style.display="none";
   document.getElementById("app-page").style.display="block";
+  // สร้าง dropdown ปี พ.ศ. ปัจจุบัน → +10 ปี
+  const sel=document.getElementById("yearSel");
+  sel.innerHTML="";
+  for(let y=BASE_BY;y<=BASE_BY+10;y++){
+    const opt=document.createElement("option");
+    opt.value=y;opt.textContent="พ.ศ. "+y;
+    if(y===BY)opt.selected=true;
+    sel.appendChild(opt);
+  }
   buildMonthTabs();
   loadBookings();
 }
